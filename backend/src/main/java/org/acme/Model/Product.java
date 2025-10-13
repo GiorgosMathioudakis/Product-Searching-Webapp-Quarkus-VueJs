@@ -1,7 +1,6 @@
 package org.acme.Model;
 
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,12 +12,12 @@ public class Product extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
-    private String name;
+    public String name;
 
-    private String sku;
+    public String sku;
 
-    private String description;
+    public String description;
 
 }

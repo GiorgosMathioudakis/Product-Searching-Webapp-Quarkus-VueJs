@@ -28,7 +28,11 @@ public class ProductResource {
     public Response createProduct(Product product){
         productService.saveProduct(product);
 
-        return Response.ok(product).build();
+        if(product.isPersistent()){
+            return Response.status(Response.Status.CREATED).entity(product).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Product could not be created").build();
+        }
     }
 
 }
