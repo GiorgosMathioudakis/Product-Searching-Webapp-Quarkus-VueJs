@@ -3,15 +3,39 @@ package org.acme.Service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.acme.Repository.ProductRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.TransactionScoped;
+import jakarta.transaction.Transactional;
+import org.acme.Model.Product;
 
 @ApplicationScoped
 public class ProductService {
 
     @Inject
-    ProductRepository productRepository;
+    EntityManager em;
 
-    public void saveProduct(org.acme.Model.Product product) {
-        productRepository.saveProduct(product);
+    @Transactional
+    public void createProduct(Product product){
+        Product new_p = new Product();
+
+        new_p.name = product.name;
+        new_p.sku = product.sku;
+
+        em.persist(product);
+
+    }
+
+    @Transactional
+    public boolean deleteProduct(Long id) {
+
+        Product product = em.find(Product.class, id);
+
+        if (product != null) {
+            em.remove(product);
+            return true;
+        }
+
+        return false;
+
     }
 }

@@ -21,18 +21,32 @@ public class ProductResource {
         return "hello from products";
     }
 
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteProduct(@PathParam("id") Long id){
+
+        boolean deleted = productService.deleteProduct(id);
+
+        if(deleted){
+            return Response.noContent().build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
+
+    }
+
     @POST
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProduct(Product product){
-        productService.saveProduct(product);
 
-        if(product.isPersistent()){
-            return Response.status(Response.Status.CREATED).entity(product).build();
-        } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Product could not be created").build();
-        }
+        productService.createProduct(product);
+
+        return Response.status(Response.Status.CREATED).entity(product).build();
+
     }
 
 }
