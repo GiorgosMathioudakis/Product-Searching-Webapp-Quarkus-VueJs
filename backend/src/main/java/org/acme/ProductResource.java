@@ -1,5 +1,6 @@
 package org.acme;
 
+import jakarta.enterprise.inject.build.compatible.spi.Validation;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -7,6 +8,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.Model.Product;
 import org.acme.Service.ProductService;
+
+import java.util.List;
 
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
@@ -17,8 +20,26 @@ public class ProductResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String hello(){
-        return "hello from products";
+    public List<Product> getProducts(){
+        return productService.findAllProducts();
+    }
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response updateProduct(
+            @PathParam("id") Long id,
+            Product updatedProduct
+    ){
+
+        boolean updated = productService.updateProduct(id, updatedProduct);
+
+        if(updated){
+            return Response.ok().entity(updatedProduct).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @DELETE
