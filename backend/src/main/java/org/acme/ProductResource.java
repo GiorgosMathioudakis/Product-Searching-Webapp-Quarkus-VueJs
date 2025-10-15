@@ -69,6 +69,18 @@ public class ProductResource {
 
     }
 
+//    @POST
+//    @Transactional
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response createProduct(Product product){
+//
+//        productService.createProduct(product);
+//
+//        return Response.status(Response.Status.CREATED).entity(product).build();
+//
+//    }
+
     @POST
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
