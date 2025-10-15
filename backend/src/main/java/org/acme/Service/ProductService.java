@@ -7,26 +7,26 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.acme.Model.Product;
+import org.acme.Repository.ProductRepository;
 
 import java.util.List;
 
 @ApplicationScoped
 public class ProductService {
 
+
     @Inject
-    EntityManager em;
+    ProductRepository productRepository;
 
     @Transactional
     public boolean updateProduct(Long id, Product updatedProduct){
 
-        Product existingProduct = em.find(Product.class, id);
+        Product existingProduct = productRepository.findById(id);
 
         if(existingProduct != null){
 
             existingProduct.name = updatedProduct.name;
             existingProduct.sku = updatedProduct.sku;
-
-//            em.merge(existingProduct);
 
             return true;
         }
@@ -41,17 +41,17 @@ public class ProductService {
         new_p.name = product.name;
         new_p.sku = product.sku;
 
-        em.persist(product);
+        productRepository.persist(product);
 
     }
 
     @Transactional
     public boolean deleteProduct(Long id) {
 
-        Product product = em.find(Product.class, id);
+        Product product = productRepository.findById(id);
 
         if (product != null) {
-            em.remove(product);
+            productRepository.delete(product);
             return true;
         }
 
@@ -60,7 +60,11 @@ public class ProductService {
     }
 
     public List<Product> findAllProducts() {
-        return em.createQuery("SELECT p FROM Product p", Product.class)
-                .getResultList();
+        return productRepository.findAll().stream().toList();
     }
+
+    public Product findProductById(Long id) {
+        return productRepository.findById(id);
+    }
+
 }

@@ -20,8 +20,19 @@ public class ProductResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public List<Product> getProducts(){
         return productService.findAllProducts();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Product getProducts(
+            @PathParam("id") Long id
+    ){
+        return productService.findProductById(id);
     }
 
     @PUT

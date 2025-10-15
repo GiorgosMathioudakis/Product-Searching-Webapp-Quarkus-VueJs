@@ -62,14 +62,8 @@
             <version>1.18.42</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>7.1.4.Final</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-hibernate-orm</artifactId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
         </dependency>
     </dependencies>
 
