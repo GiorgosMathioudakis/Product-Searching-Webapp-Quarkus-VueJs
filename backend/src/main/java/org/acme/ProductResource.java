@@ -20,6 +20,18 @@ public class ProductResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/page")
+    public List<Product> getProducts(
+            @QueryParam("pageNo") int pageNo,
+            @QueryParam("pageSize") int pageSize
+    ){
+
+        return productService.getPage(pageNo,pageSize);
+
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Product> getProducts(){
         return productService.findAllProducts();
     }

@@ -3,6 +3,7 @@ package org.acme.Service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.acme.Model.Product;
 import org.hibernate.StatelessSession;
@@ -58,7 +59,21 @@ public class ProductService {
 
     }
 
+    @Transactional
     public List<Product> findAllProducts() {
-        return statelessSession.createQuery("select p from Product p").list();
+        return statelessSession.createNativeQuery("select p from Product p", Product.class).list();
     }
+
+    @Transactional
+    public List<Product> getPage(int pageNo, int limit) {
+
+        int offset = (pageNo-1)*limit;
+
+        return statelessSession.createNativeQuery("select * from Product LIMIT :limit OFFSET :offest " , Product.class)
+                .setParameter("offest", offset)
+                .setParameter("limit", limit)
+                .getResultList();
+
+    }
+
 }
