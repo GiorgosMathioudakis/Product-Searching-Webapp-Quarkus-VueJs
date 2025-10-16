@@ -15,37 +15,35 @@ import java.util.List;
 public class ProductService {
 
     @Inject
-    SessionFactory sessionFactory;
+    StatelessSession statelessSession;
 
-//    @Transactional
-//    public boolean updateProduct(Long id, Product updatedProduct){
-//
-//        Product existingProduct = em.find(Product.class, id);
-//
-//        if(existingProduct != null){
-//
-//            existingProduct.name = updatedProduct.name;
-//            existingProduct.sku = updatedProduct.sku;
-//
-////            em.merge(existingProduct);
-//
-//            return true;
-//        }
-//
-//        return false;
-//    }
+    @Transactional
+    public boolean updateProduct(Long id, Product updatedProduct){
+
+        Product existingProduct = statelessSession.get(Product.class, id);
+
+        if(existingProduct != null){
+
+            existingProduct.name = updatedProduct.name;
+            existingProduct.sku = updatedProduct.sku;
+
+            statelessSession.update(existingProduct);
+
+            return true;
+        }
+
+        return false;
+    }
 
     @Transactional
     public void createProduct(Product product){
 
-        try (StatelessSession session = sessionFactory.openStatelessSession()) {
+        Product new_p =  new Product();
 
-            session.insert(product);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to insert product", e);
-        } finally {
-            log.info("finally block");
-        }
+        new_p.name=product.name;
+        new_p.sku=product.sku;
+
+        statelessSession.insert(new_p);
     }
 
 //    @Transactional

@@ -23,25 +23,25 @@ public class ProductResource {
 //    public List<Product> getProducts(){
 //        return productService.findAllProducts();
 //    }
-//
-//    @PUT
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Path("/{id}")
-//    public Response updateProduct(
-//            @PathParam("id") Long id,
-//            Product updatedProduct
-//    ){
-//
-//        boolean updated = productService.updateProduct(id, updatedProduct);
-//
-//        if(updated){
-//            return Response.ok().entity(updatedProduct).build();
-//        }
-//
-//        return Response.status(Response.Status.NOT_FOUND).build();
-//    }
-//
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response updateProduct(
+            @PathParam("id") Long id,
+            Product updatedProduct
+    ){
+
+        boolean updated = productService.updateProduct(id, updatedProduct);
+
+        if(updated){
+            return Response.ok().entity(updatedProduct).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
 //    @DELETE
 //    @Path("/{id}")
 //    @Transactional
