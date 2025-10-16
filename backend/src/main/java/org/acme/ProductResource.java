@@ -18,11 +18,11 @@ public class ProductResource {
     @Inject
     ProductService productService;
 
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public List<Product> getProducts(){
-//        return productService.findAllProducts();
-//    }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Product> getProducts(){
+        return productService.findAllProducts();
+    }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,21 +42,21 @@ public class ProductResource {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-//    @DELETE
-//    @Path("/{id}")
-//    @Transactional
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response deleteProduct(@PathParam("id") Long id){
-//
-//        boolean deleted = productService.deleteProduct(id);
-//
-//        if(deleted){
-//            return Response.noContent().build();
-//        }
-//
-//        return Response.status(Response.Status.NOT_FOUND).build();
-//
-//    }
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteProduct(@PathParam("id") Long id){
+
+        boolean deleted = productService.deleteProduct(id);
+
+        if(deleted){
+            return Response.noContent().build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
+
+    }
 
     @POST
     @Transactional

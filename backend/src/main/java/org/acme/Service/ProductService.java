@@ -3,10 +3,8 @@ package org.acme.Service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.acme.Model.Product;
-import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 
 import java.util.List;
@@ -46,22 +44,21 @@ public class ProductService {
         statelessSession.insert(new_p);
     }
 
-//    @Transactional
-//    public boolean deleteProduct(Long id) {
-//
-//        Product product = em.find(Product.class, id);
-//
-//        if (product != null) {
-//            em.remove(product);
-//            return true;
-//        }
-//
-//        return false;
-//
-//    }
-//
-//    public List<Product> findAllProducts() {
-//        return em.createQuery("SELECT p FROM Product p", Product.class)
-//                .getResultList();
-//    }
+    @Transactional
+    public boolean deleteProduct(Long id) {
+
+        Product product = statelessSession.get(Product.class, id);
+
+        if (product != null) {
+            statelessSession.delete(product);
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public List<Product> findAllProducts() {
+        return statelessSession.createQuery("select p from Product p").list();
+    }
 }
