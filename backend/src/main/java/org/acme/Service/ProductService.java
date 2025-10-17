@@ -25,9 +25,7 @@ public class ProductService {
 
             existingProduct.name = updatedProduct.name;
             existingProduct.sku = updatedProduct.sku;
-
-//            em.merge(existingProduct);
-
+            
             return true;
         }
 
