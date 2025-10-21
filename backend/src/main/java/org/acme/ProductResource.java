@@ -1,6 +1,5 @@
 package org.acme;
 
-import jakarta.enterprise.inject.build.compatible.spi.Validation;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -21,7 +20,7 @@ public class ProductResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/page")
-    public List<Product> getProducts(
+    public List<Product> getProductsPage(
             @QueryParam("pageNo") int pageNo,
             @QueryParam("pageSize") int pageSize
     ){
@@ -32,8 +31,10 @@ public class ProductResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> getProducts(){
-        return productService.findAllProducts();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAllProducts(){
+        List<Product> products = productService.findAllProducts();
+        return Response.ok(products).build();
     }
 
     @PUT
@@ -76,7 +77,7 @@ public class ProductResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProduct(Product product){
 
-        productService.createProduct(product);
+        boolean result = productService.createProduct(product);
 
         return Response.status(Response.Status.CREATED).entity(product).build();
 

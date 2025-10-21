@@ -16,6 +16,10 @@ public class ProductService {
     @Inject
     StatelessSession statelessSession;
 
+    @Inject
+    EntityManager em;
+
+
     @Transactional
     public boolean updateProduct(Long id, Product updatedProduct){
 
@@ -35,7 +39,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void createProduct(Product product){
+    public boolean createProduct(Product product){
 
         Product new_p =  new Product();
 
@@ -43,6 +47,11 @@ public class ProductService {
         new_p.sku=product.sku;
 
         statelessSession.insert(new_p);
+
+        Product persistedProduct = statelessSession.get(Product.class, new_p.id);
+
+        return persistedProduct.id > 0;
+
     }
 
     @Transactional
@@ -61,7 +70,7 @@ public class ProductService {
 
     @Transactional
     public List<Product> findAllProducts() {
-        return statelessSession.createNativeQuery("select p from Product p", Product.class).list();
+        return statelessSession.createNativeQuery("select * from product").getResultList();
     }
 
     @Transactional
