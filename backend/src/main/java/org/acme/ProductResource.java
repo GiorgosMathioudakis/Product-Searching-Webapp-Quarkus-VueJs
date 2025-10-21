@@ -8,7 +8,10 @@ import jakarta.ws.rs.core.Response;
 import org.acme.Model.Product;
 import org.acme.Service.ProductService;
 
+import java.net.URI;
 import java.util.List;
+
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
@@ -77,9 +80,13 @@ public class ProductResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProduct(Product product){
 
-        boolean result = productService.createProduct(product);
+        boolean created = productService.createProduct(product);
 
-        return Response.status(Response.Status.CREATED).entity(product).build();
+        if(created){
+            return Response.status(Response.Status.CREATED).entity(product).build();
+        }
+
+        return Response.status(BAD_REQUEST).build();
 
     }
 

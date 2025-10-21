@@ -50,7 +50,7 @@ public class ProductService {
 
         Product persistedProduct = statelessSession.get(Product.class, new_p.id);
 
-        return persistedProduct.id > 0;
+        return persistedProduct != null;
 
     }
 
@@ -59,12 +59,13 @@ public class ProductService {
 
         Product product = statelessSession.get(Product.class, id);
 
-        if (product != null) {
-            statelessSession.delete(product);
-            return true;
-        }
+        if(product == null) return false;
 
-        return false;
+        statelessSession.delete(product);
+
+        boolean persisted = statelessSession.get(Product.class, id) == null;
+
+        return persisted;
 
     }
 

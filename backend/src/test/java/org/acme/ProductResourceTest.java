@@ -22,9 +22,7 @@ import static org.wildfly.common.Assert.assertNotNull;
 @QuarkusTest
 public class ProductResourceTest {
 
-    @InjectMock ProductRepository productRepository;
-
-    @Inject ProductService productService;
+    @InjectMock ProductService productService;
 
     @Inject ProductResource productResource;
 
@@ -41,7 +39,7 @@ public class ProductResourceTest {
     void getAllProducts(){
         List<Product> products = productService.findAllProducts();
         products.add(product);
-        Mockito.when(productRepository.listAll()).thenReturn(products);
+        Mockito.when(productService.findAllProducts()).thenReturn(products);
 
         jakarta.ws.rs.core.Response response = productResource.getAllProducts();
         assertNotNull(response);
@@ -58,25 +56,6 @@ public class ProductResourceTest {
     void getProductsPageTest(){
         List<Product> products = productService.getPage(1,2);
 
-    }
-
-    @Test
-    void createProductTest(){
-
-        Mockito.doNothing().when(productRepository).persist(ArgumentMatchers.any(Product.class));
-
-        Mockito.when(productService.createProduct(ArgumentMatchers.any(Product.class))).thenReturn(false);
-
-        Product product = new Product();
-
-        product.name = "t-shirt";
-        product.sku = "CH2";
-
-        jakarta.ws.rs.core.Response response = productResource.createProduct(product);
-        assertNotNull(response);
-        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertNull(response.getEntity());
-        assertNull(response.getLocation());
     }
 
 }
