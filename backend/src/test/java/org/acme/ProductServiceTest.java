@@ -91,8 +91,6 @@ public class ProductServiceTest {
     void deleteByIdOK() {
         Mockito.when(statelessSession.get(ArgumentMatchers.eq(Product.class), ArgumentMatchers.any())).thenReturn(product);
 
-        Mockito.doNothing().when(statelessSession).delete(ArgumentMatchers.any(Product.class));
-
         boolean response = productService.deleteProductById(1L);
 
         assertTrue(response);
@@ -101,8 +99,6 @@ public class ProductServiceTest {
     @Test
     void deleteByIdKO() {
         Mockito.when(statelessSession.get(ArgumentMatchers.eq(Product.class), ArgumentMatchers.any())).thenReturn(null);
-
-        Mockito.doNothing().when(statelessSession).delete(ArgumentMatchers.any(Product.class));
 
         boolean response = productService.deleteProductById(1L);
 
@@ -140,6 +136,30 @@ public class ProductServiceTest {
 
     @Test
     void getPageTest(){
+        List<Product> products = new ArrayList<>();
+
+        products.add(new Product("Hat","GR1"));
+        products.add(new Product("Shirt","CH1"));
+
+        Mockito.when(statelessSession.createNativeQuery(
+                Mockito.anyString(),
+                Mockito.eq(Product.class))
+        ).thenReturn(mockQuery);
+
+
+        Mockito.when(mockQuery.setParameter(Mockito.anyString(), Mockito.any()))
+                .thenReturn(mockQuery);
+
+        Mockito.when(mockQuery.getResultList())
+                .thenReturn(products.subList(1,2));
+
+        List<Product> result;
+        result = productService.getPage(2, 1);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Shirt", result.get(0).name);
+        assertEquals("CH1", result.get(0).sku);
 
     }
 

@@ -19,6 +19,13 @@ public class Product{
     @Column(nullable = false,unique = true, length = 12)
     public String sku;
 
+    public Product(){}
+
+    public Product(String name, String sku) {
+        this.name = name;
+        this.sku = sku;
+    }
+
 //    @Column(nullable = false, precision = 12, scale = 2)
 //    public BigDecimal price;
 //
