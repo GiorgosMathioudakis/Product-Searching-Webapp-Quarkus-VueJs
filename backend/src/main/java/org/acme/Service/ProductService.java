@@ -25,17 +25,14 @@ public class ProductService {
 
         Product existingProduct = statelessSession.get(Product.class, id);
 
-        if(existingProduct != null){
+        if(existingProduct == null) return false;
 
-            existingProduct.name = updatedProduct.name;
-            existingProduct.sku = updatedProduct.sku;
+        existingProduct.name = updatedProduct.name;
+        existingProduct.sku = updatedProduct.sku;
 
-            statelessSession.update(existingProduct);
+        statelessSession.update(existingProduct);
 
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     @Transactional
@@ -55,7 +52,7 @@ public class ProductService {
     }
 
     @Transactional
-    public boolean deleteProduct(Long id) {
+    public boolean deleteProductById(Long id) {
 
         Product product = statelessSession.get(Product.class, id);
 
@@ -63,9 +60,7 @@ public class ProductService {
 
         statelessSession.delete(product);
 
-        boolean persisted = statelessSession.get(Product.class, id) == null;
-
-        return persisted;
+        return true;
 
     }
 

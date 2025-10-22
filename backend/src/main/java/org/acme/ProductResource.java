@@ -64,7 +64,7 @@ public class ProductResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteProduct(@PathParam("id") Long id){
 
-        boolean deleted = productService.deleteProduct(id);
+        boolean deleted = productService.deleteProductById(id);
 
         if(deleted){
             return Response.noContent().build();
