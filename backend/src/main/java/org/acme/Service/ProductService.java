@@ -1,6 +1,7 @@
 package org.acme.Service;
 
 
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -66,7 +67,7 @@ public class ProductService {
 
     @Transactional
     public List<Product> findAllProducts() {
-        return statelessSession.createNativeQuery("select * from product").getResultList();
+        return statelessSession.createNativeQuery("select * from product" , Product.class).getResultList();
     }
 
     @Transactional

@@ -67,8 +67,10 @@ public class ProductServiceTest {
         List<Product> products = new ArrayList<>();
         products.add(product);
 
-        Mockito.when(statelessSession.createNativeQuery(ArgumentMatchers.anyString()))
-                .thenReturn(mockQuery);
+        Mockito.when(statelessSession.createNativeQuery(
+                Mockito.anyString(),
+                Mockito.eq(Product.class))
+        ).thenReturn(mockQuery);
 
         Mockito.when(mockQuery.getResultList())
                 .thenReturn(products);
