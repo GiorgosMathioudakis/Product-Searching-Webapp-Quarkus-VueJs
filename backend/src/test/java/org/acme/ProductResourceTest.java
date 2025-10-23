@@ -108,6 +108,12 @@ public class ProductResourceTest {
                 .then()
                 .statusCode(204);
 
+        given()
+                .when().get("/products")
+                .then()
+                .statusCode(200)
+                .body("$", hasSize(1));
+
     }
 
     @Test
@@ -119,6 +125,18 @@ public class ProductResourceTest {
                 .then()
                 .statusCode(404);
 
+    }
+
+    @Test
+    void testGetProductsPageEndpoint() {
+        given()
+                .contentType(ContentType.JSON)
+                .queryParam("pageNo", 2)
+                .queryParam("pageSize", 1)
+                .when().get("/products/page")
+                .then()
+                .body("[0].name", equalTo("Shirt"))
+                .body("[0].sku", equalTo("CH1"));
     }
 
 }

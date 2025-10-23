@@ -23,12 +23,14 @@ public class ProductResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/page")
-    public List<Product> getProductsPage(
+    public Response getProductsPage(
             @QueryParam("pageNo") int pageNo,
             @QueryParam("pageSize") int pageSize
     ){
 
-        return productService.getPage(pageNo,pageSize);
+        List<Product> products = productService.getPage(pageNo,pageSize);
+
+        return Response.ok(products).build();
 
     }
 
