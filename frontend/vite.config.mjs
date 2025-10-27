@@ -76,5 +76,16 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    proxy: {
+      // This will proxy any request that starts with '/products'
+      // to your Quarkus backend.
+      '/products': {
+        target: 'http://localhost:8080', // Your Quarkus API URL
+        changeOrigin: true, // Needed for virtual hosted sites
+        secure: false,      // If you're not using https
+      }
+      // You can add other API paths here, e.g., '/users', '/orders'
+    }
   },
+  
 })

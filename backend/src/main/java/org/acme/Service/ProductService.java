@@ -30,6 +30,7 @@ public class ProductService {
 
         existingProduct.name = updatedProduct.name;
         existingProduct.sku = updatedProduct.sku;
+        existingProduct.price = updatedProduct.price;
 
         statelessSession.update(existingProduct);
 
@@ -43,6 +44,7 @@ public class ProductService {
 
         new_p.name=product.name;
         new_p.sku=product.sku;
+        new_p.price=product.price;
 
         statelessSession.insert(new_p);
 
