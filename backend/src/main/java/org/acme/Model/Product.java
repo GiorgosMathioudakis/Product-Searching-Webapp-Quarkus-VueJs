@@ -1,7 +1,10 @@
 package org.acme.Model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Entity
 @Table(name = "product")
@@ -26,17 +29,21 @@ public class Product{
         this.name = name;
         this.sku = sku;
         this.price = price;
+        this.description = description;
     }
 
-//    @Column(columnDefinition = "text", length = 255)
-//    public String description;
-//
+    @Column(nullable = false, length = 255)
+    public String description;
+
+    @CreationTimestamp
+    public Instant createdOn;
+
 //    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
 //    private OffsetDateTime createdAt;
 //
 //    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
 //    private OffsetDateTime updatedAt;
-//2
+//
 //    @PrePersist
 //    void prePersist() {
 //        OffsetDateTime now = OffsetDateTime.now();

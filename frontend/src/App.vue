@@ -49,8 +49,8 @@ const loading = ref(true);
 // 'key' is the property name in your product object.
 const headers = ref([
   { title: 'Product Name', key: 'name', minWidth: '200px' },
-  { title: 'SKU', key: 'sku' },
-  { title: 'Description', key: 'description', minWidth: '300px' },
+  { title: 'SKU', key: 'sku' , sortable:false },
+  { title: 'Description', key: 'description', minWidth: '300px' , sortable:false },
   { title: 'Price', key: 'price', align: 'end' },
   {
     title: 'Actions',
@@ -72,10 +72,6 @@ onMounted(async () => {
 async function fetchProducts() {
   loading.value = true;
   try {
-    // We use a simple fetch API.
-    // Assumes your Quarkus app is on the same host/port.
-    // If not, replace '/products' with the full URL
-    // (e.g., 'http://localhost:8080/products')
     const response = await fetch('/products');
 
     if (!response.ok) {
@@ -86,7 +82,6 @@ async function fetchProducts() {
 
   } catch (error) {
     console.error("Failed to fetch products:", error);
-    // In a real app, you'd show a v-alert or snackbar here
   } finally {
     loading.value = false;
   }
@@ -94,23 +89,17 @@ async function fetchProducts() {
 
 function editProduct(product) {
   console.log('EDIT product:', product.id, product.name);
-  // Your logic to open an edit dialog/modal would go here
-  // You can pass the 'product' object to it.
+
 }
 
 function deleteProduct(product) {
   console.log('DELETE product:', product.id, product.name);
-  // Your logic for a confirmation dialog would go here.
-  // After confirmation, you would call:
-  // await fetch(`/products/${product.id}`, { method: 'DELETE' });
-  // And then refresh the table:
-  // await fetchProducts();
+
 }
 </script>
 
 <style scoped>
-/* Scoped CSS applies only to this component */
-/* The v-data-table is already well-styled, but you can override here */
+
 :deep(th) {
   font-weight: bold !important;
   color: #333 !important;
