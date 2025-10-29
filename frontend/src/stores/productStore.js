@@ -1,0 +1,71 @@
+import axios from "axios";
+
+import { defineStore } from "pinia";
+
+import { ref } from "vue";
+
+// defineStore('id', setup_function)
+// 'products' is the unique ID of this store
+export const useProductStore = defineStore("products", () => {
+  // 1. STATE
+  // These are the refs that used to be in App.vue
+  const products = ref([]);
+  const loading = ref(true);
+
+  async function fetchProducts() {
+    loading.value = true;
+    try {
+      const response = await axios.get("/products");
+      products.value = response.data;
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function createNewProduct(productData) {
+    try {
+      await axios.post("/products", productData);
+
+      await fetchProducts();
+    } catch (error) {
+      console.error("Error during create request:", error);
+    }
+  }
+
+  async function updateProduct(productData) {
+    try {
+      await axios.put("/products/${productData.id}", productData);
+
+      await fetchProducts();
+    } catch (error) {
+      console.error("Error during update request: ", error);
+    }
+  }
+
+  async function removeProduct(productId) {
+    try {
+      await axios.delete("/products/${productId}");
+
+      await fetchProducts();
+    } catch (error) {
+      console.error("Error during remove request: ", error);
+    }
+  }
+
+  // 3. RETURN
+  // You must return all the state and actions that
+  // your components will need to access.
+  return {
+    // State
+    products,
+    loading,
+
+    // Actions
+    fetchProducts,
+    createNewProduct,
+    updateProduct,
+    removeProduct,
+  };
+});

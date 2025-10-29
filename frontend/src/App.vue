@@ -1,132 +1,284 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="products"
-    :loading="loading"
-    item-value="id"
-    class="elevation-1"
-    loading-text="Loading products..."
-    no-data-text="No products found."
-  >
-    <template v-slot:item.price="{ item }">
-      <span>${{ item.price.toFixed(2) }}</span>
-    </template>
 
-    <template v-slot:item.createdOn="{ item }">
-      <span>{{ formatDateTime(item.createdOn) }}</span>
-    </template>
-
-    <template v-slot:item.updatedOn="{ item }">
-      <span>{{ formatDateTime(item.updatedOn) }}</span>
-    </template>
-
-    <template v-slot:item.actions="{ item }">
+  <v-card class="elevation-2">
+    <v-toolbar color="surface" density="compact">
+      <v-toolbar-title>Products</v-toolbar-title>
+      <v-spacer />
       <v-btn
-        icon="mdi-pencil"
-        variant="text"
         color="primary"
-        size="small"
-        class="me-2"
-        @click="editProduct(item)"
-        aria-label="Edit product"
-      ></v-btn>
-      <v-btn
-        icon="mdi-delete"
-        variant="text"
-        color="error"
-        size="small"
-        @click="deleteProduct(item)"
-        aria-label="Delete product"
-      ></v-btn>
-    </template>
-  </v-data-table>
+        prepend-icon="mdi-plus"
+        variant="flat"
+        @click="openCreateDialog"
+      >
+        New Product
+      </v-btn>
+    </v-toolbar>
+    <v-data-table
+      class="elevation-1"
+      :headers="headers"
+      item-value="id"
+      :items="products"
+      :loading="loading"
+      loading-text="Loading products..."
+      no-data-text="No products found."
+    >
+      <template #item.price="{ item }">
+        <span>${{ item.price.toFixed(2) }}</span>
+      </template>
+
+      <template #item.createdOn="{ item }">
+        <span>{{ formatDateTime(item.createdOn) }}</span>
+      </template>
+
+      <template #item.updatedOn="{ item }">
+        <span>{{ formatDateTime(item.updatedOn) }}</span>
+      </template>
+
+      <template #item.actions="{ item }">
+        <v-btn
+          aria-label="Edit product"
+          class="me-2"
+          color="primary"
+          icon="mdi-pencil"
+          size="small"
+          variant="text"
+          @click="openEditDialog(item)"
+        />
+        <v-btn
+          aria-label="Delete product"
+          color="error"
+          icon="mdi-delete"
+          size="small"
+          variant="text"
+          @click="deleteProduct(item)"
+        />
+      </template>
+    </v-data-table>
+  </v-card>
+
+  <v-dialog v-model="dialogVisible" max-width="600px" persistent>
+    <v-card>
+      <!-- The title is dynamic -->
+      <v-card-title class="pa-4 bg-primary">
+        <span class="text-h5">{{ dialogTitle }}</span>
+      </v-card-title>
+
+      <v-card-text>
+        <v-form>
+          <v-container>
+            <!-- Form fields, bound to our productForm ref -->
+            <v-text-field
+              v-model="productForm.name"
+              density="compact"
+              label="Name"
+              variant="outlined"
+            />
+            <v-text-field
+              v-model="productForm.sku"
+              density="compact"
+              label="SKU"
+              variant="outlined"
+            />
+            <v-text-field
+              v-model="productForm.description"
+              density="compact"
+              label="Description"
+              variant="outlined"
+            />
+            <v-text-field
+              v-model.number="productForm.price"
+              density="compact"
+              label="Price"
+              prefix="$"
+              type="number"
+              variant="outlined"
+            />
+          </v-container>
+        </v-form>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="blue-grey-darken-1" variant="text" @click="closeDialog">
+          Cancel
+        </v-btn>
+        <v-btn color="blue-darken-1" variant="flat" @click="saveProduct">
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+  import { onMounted, ref } from 'vue'
 
-// 1. STATE
-// Holds the product data
-const products = ref([]);
-// Controls the loading spinner
-const loading = ref(true);
+  // 1. STATE
+  const products = ref([])
 
-// Defines the columns for the v-data-table.
-// 'title' is the displayed text.
-// 'key' is the property name in your product object.
-const headers = ref([
-  { title: "Product Name", key: "name", minWidth: "100px", sortable: false },
-  { title: "Price", key: "price" },
-  { title: "SKU", key: "sku", sortable: false },
-  {
-    title: "Description",
-    key: "description",
-    minWidth: "150px",
-    sortable: false,
-  },
-  { title: "Created On", key: "createdOn" },
-  { title: "Updated On", key: "updatedOn" },
-  {
-    title: "Actions",
-    key: "actions",
-    sortable: false,
-    align: "end",
-    width: "120px",
-  },
-]);
+  const loading = ref(true)
 
-// 2. LIFECYCLE
-// onMounted is a Vue hook that runs once when the component is
-// first added to the page. Perfect for fetching initial data.
-onMounted(async () => {
-  await fetchProducts();
-});
+  const headers = ref([
+    { title: 'Name', key: 'name', minWidth: '100px', sortable: false },
+    { title: 'Price', key: 'price' },
+    { title: 'SKU', key: 'sku', sortable: false },
+    {
+      title: 'Description',
+      key: 'description',
+      minWidth: '150px',
+      sortable: false,
+    },
+    { title: 'Created On', key: 'createdOn' },
+    { title: 'Updated On', key: 'updatedOn' },
+    {
+      title: 'Actions',
+      key: 'actions',
+      sortable: false,
+      align: 'end',
+      width: '120px',
+    },
+  ])
 
-// 3. METHODS
-async function fetchProducts() {
-  loading.value = true;
-  try {
-    const response = await fetch("/products");
+  const dialogVisible = ref(false) // Controls if the dialog is open
+  const dialogTitle = ref('') // Holds the title "New Product" or "Edit Product"
+  const isEditMode = ref(false) // Tracks if we are editing or creating
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const productForm = ref({
+    id: null,
+    name: '',
+    sku: '',
+    description: '',
+    price: 0,
+  })
+
+  // 2. LIFECYCLE
+  // onMounted is a Vue hook that runs once when the component is
+  // first added to the page. Perfect for fetching initial data.
+  onMounted(async () => {
+    await fetchProducts()
+  })
+
+  // 3. METHODS
+  async function fetchProducts () {
+    loading.value = true
+    try {
+      const response = await fetch('/products')
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      products.value = await response.json()
+    } catch (error) {
+      console.error('Failed to fetch products:', error)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  function formatDateTime (isoString) {
+    if (!isoString) return 'N/A'
+
+    const date = new Date(isoString)
+
+    // Define the desired format
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
     }
 
-    products.value = await response.json();
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-  } finally {
-    loading.value = false;
+    // By passing 'undefined' as the first argument, we tell
+    // toLocaleString() to use the browser's default locale (language).
+    // It will *also* automatically use the browser's default timezone.
+    return date.toLocaleString(undefined, options)
   }
-}
 
-function formatDateTime(isoString) {
-  if (!isoString) return "N/A";
+  function openCreateDialog () {
+    isEditMode.value = false
+    dialogTitle.value = 'New Product'
 
-  const date = new Date(isoString);
+    // Reset the form to its default empty state
+    productForm.value = {
+      id: null,
+      name: '',
+      sku: '',
+      description: '',
+      price: 0,
+    }
 
-  // Define the desired format
-  const options = {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
+    dialogVisible.value = true
+  }
 
-  // By passing 'undefined' as the first argument, we tell
-  // toLocaleString() to use the browser's default locale (language).
-  // It will *also* automatically use the browser's default timezone.
-  return date.toLocaleString(undefined, options);
-}
+  function openEditDialog (product) {
+    isEditMode.value = true
+    dialogTitle.value = 'Edit Product'
 
-function editProduct(product) {
-  console.log("EDIT product:", product.id, product.name);
-}
+    // Load a *copy* of the product's data into the form
+    // We use {...product} to make a copy, so we don't
+    // accidentally change the table data if the user cancels.
+    productForm.value = { ...product }
 
-function deleteProduct(product) {
-  console.log("DELETE product:", product.id, product.name);
-}
+    dialogVisible.value = true
+  }
+
+  function closeDialog () {
+    dialogVisible.value = false
+  }
+
+  async function saveProduct () {
+    let url = '/products'
+    let method = 'POST'
+
+    // If we are in Edit Mode, change the URL and Method
+    if (isEditMode.value) {
+      url = `/products/${productForm.value.id}`
+      method = 'PUT'
+    } else {
+      url = `http://localhost:8080/products`
+      method = 'POST'
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Send the data from our form
+        body: JSON.stringify(productForm.value),
+      })
+
+      if (response.ok) {
+        console.log('Product saved successfully.')
+        closeDialog() // Close the modal
+        await fetchProducts() // Refresh the table data
+      } else {
+        console.error(`Failed to save. Server responded with ${response.status}`)
+      }
+    } catch (error) {
+      console.error('Error during save request:', error)
+    }
+  }
+
+  async function deleteProduct (product) {
+    console.log('DELETE product with id:', product.id)
+    try {
+      const response = await fetch(`/products/${product.id}`, { method: 'DELETE' })
+      if (response.ok) {
+        console.log('Product deleted. Refreshing table...')
+        await fetchProducts()
+      } else {
+        console.error(`Failed to delete. Server responded with ${response.status}`)
+      }
+    } catch {
+      console.error('Error during delete request:')
+    }
+  }
+
 </script>
 
 <style scoped>
