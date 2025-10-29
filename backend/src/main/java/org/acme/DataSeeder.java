@@ -33,9 +33,11 @@ public class DataSeeder {
 
             String name = "Sample Product " + i;
 
+            String description = "Sample description " + i;
+
             BigDecimal price = new BigDecimal("10." + String.format("%02d", i-1));
 
-            Product product = new Product(name, sku, price);
+            Product product = new Product(name, sku, price,description);
 
             em.persist(product);
         }

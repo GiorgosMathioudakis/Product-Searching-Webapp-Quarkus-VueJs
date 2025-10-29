@@ -136,8 +136,8 @@ public class ProductServiceTest {
     void getPageTest(){
         List<Product> products = new ArrayList<>();
 
-        products.add(new Product("Hat","GR1",new BigDecimal(10)));
-        products.add(new Product("Shirt","CH1",new BigDecimal(12)));
+        products.add(new Product("Hat","GR1",new BigDecimal(10),""));
+        products.add(new Product("Shirt","CH1",new BigDecimal(12),""));
 
         Mockito.when(statelessSession.createNativeQuery(
                 Mockito.anyString(),

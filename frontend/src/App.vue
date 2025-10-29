@@ -12,6 +12,9 @@
       <span>${{ item.price.toFixed(2) }}</span>
     </template>
 
+    <template v-slot:item.createdOn="{ item }">
+      <span>{{ formatDateTime(item.createdOn) }}</span>
+    </template>
 
     <template v-slot:item.actions="{ item }">
       <v-btn
@@ -36,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
 // 1. STATE
 // Holds the product data
@@ -48,16 +51,22 @@ const loading = ref(true);
 // 'title' is the displayed text.
 // 'key' is the property name in your product object.
 const headers = ref([
-  { title: 'Product Name', key: 'name', minWidth: '200px' },
-  { title: 'SKU', key: 'sku' , sortable:false },
-  { title: 'Description', key: 'description', minWidth: '300px' , sortable:false },
-  { title: 'Price', key: 'price', align: 'end' },
+  { title: "Product Name", key: "name", minWidth: "100px", sortable: false },
+  { title: "Price", key: "price" },
+  { title: "SKU", key: "sku", sortable: false },
   {
-    title: 'Actions',
-    key: 'actions',
+    title: "Description",
+    key: "description",
+    minWidth: "150px",
     sortable: false,
-    align: 'end',
-    width: '120px'
+  },
+  { title: "Created On", key: "createdOn" },
+  {
+    title: "Actions",
+    key: "actions",
+    sortable: false,
+    align: "end",
+    width: "120px",
   },
 ]);
 
@@ -72,14 +81,13 @@ onMounted(async () => {
 async function fetchProducts() {
   loading.value = true;
   try {
-    const response = await fetch('/products');
+    const response = await fetch("/products");
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     products.value = await response.json();
-
   } catch (error) {
     console.error("Failed to fetch products:", error);
   } finally {
@@ -87,19 +95,36 @@ async function fetchProducts() {
   }
 }
 
-function editProduct(product) {
-  console.log('EDIT product:', product.id, product.name);
+function formatDateTime(isoString) {
+  if (!isoString) return 'N/A';
 
+  const date = new Date(isoString);
+
+  // Define the desired format
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+
+  // By passing 'undefined' as the first argument, we tell
+  // toLocaleString() to use the browser's default locale (language).
+  // It will *also* automatically use the browser's default timezone.
+  return date.toLocaleString(undefined, options);
+}
+
+function editProduct(product) {
+  console.log("EDIT product:", product.id, product.name);
 }
 
 function deleteProduct(product) {
-  console.log('DELETE product:', product.id, product.name);
-
+  console.log("DELETE product:", product.id, product.name);
 }
 </script>
 
 <style scoped>
-
 :deep(th) {
   font-weight: bold !important;
   color: #333 !important;
