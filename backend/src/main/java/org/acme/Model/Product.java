@@ -2,6 +2,7 @@ package org.acme.Model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -41,14 +42,8 @@ public class Product{
     @Column(nullable = false,name = "created_on" , columnDefinition = "TIMESTAMPTZ")
     public OffsetDateTime createdOn;
 
-//    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
-//    private OffsetDateTime createdAt;
+    @UpdateTimestamp
+    @Column(nullable = false,name = "updated_on" , columnDefinition = "TIMESTAMPTZ")
+    public OffsetDateTime updatedOn;
 
-//    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
-//    private OffsetDateTime updatedAt;
-
-//    @PreUpdate
-//    void preUpdate() {
-//        this.updatedAt = OffsetDateTime.now();
-//    }
 }

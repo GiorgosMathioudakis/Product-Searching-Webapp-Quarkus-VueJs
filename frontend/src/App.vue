@@ -16,6 +16,10 @@
       <span>{{ formatDateTime(item.createdOn) }}</span>
     </template>
 
+    <template v-slot:item.updatedOn="{ item }">
+      <span>{{ formatDateTime(item.updatedOn) }}</span>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <v-btn
         icon="mdi-pencil"
@@ -61,6 +65,7 @@ const headers = ref([
     sortable: false,
   },
   { title: "Created On", key: "createdOn" },
+  { title: "Updated On", key: "updatedOn" },
   {
     title: "Actions",
     key: "actions",
@@ -96,17 +101,17 @@ async function fetchProducts() {
 }
 
 function formatDateTime(isoString) {
-  if (!isoString) return 'N/A';
+  if (!isoString) return "N/A";
 
   const date = new Date(isoString);
 
   // Define the desired format
   const options = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
   };
 
   // By passing 'undefined' as the first argument, we tell
