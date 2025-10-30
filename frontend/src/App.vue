@@ -50,7 +50,7 @@
           icon="mdi-delete"
           size="small"
           variant="text"
-          @click="deleteProduct(item)"
+          @click="productStore.removeProduct(item.id)"
         />
       </template>
     </v-data-table>
@@ -102,7 +102,7 @@
         <v-btn color="blue-grey-darken-1" variant="text" @click="closeDialog">
           Cancel
         </v-btn>
-        <v-btn color="blue-darken-1" variant="flat" @click="saveProduct">
+        <v-btn color="blue-darken-1" variant="flat" @click=productStore.createNewProduct>
           Save
         </v-btn>
       </v-card-actions>
@@ -113,9 +113,12 @@
 
 <script setup>
   import { onMounted, ref } from 'vue'
+  import { useProductStore } from '@/stores/product.js';
 
   // 1. STATE
   const products = ref([])
+
+  const productStore = useProductStore();
 
   const loading = ref(true)
 
@@ -227,56 +230,6 @@
 
   function closeDialog () {
     dialogVisible.value = false
-  }
-
-  async function saveProduct () {
-    let url = '/products'
-    let method = 'POST'
-
-    // If we are in Edit Mode, change the URL and Method
-    if (isEditMode.value) {
-      url = `/products/${productForm.value.id}`
-      method = 'PUT'
-    } else {
-      url = `http://localhost:8080/products`
-      method = 'POST'
-    }
-
-    try {
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Send the data from our form
-        body: JSON.stringify(productForm.value),
-      })
-
-      if (response.ok) {
-        console.log('Product saved successfully.')
-        closeDialog() // Close the modal
-        await fetchProducts() // Refresh the table data
-      } else {
-        console.error(`Failed to save. Server responded with ${response.status}`)
-      }
-    } catch (error) {
-      console.error('Error during save request:', error)
-    }
-  }
-
-  async function deleteProduct (product) {
-    console.log('DELETE product with id:', product.id)
-    try {
-      const response = await fetch(`/products/${product.id}`, { method: 'DELETE' })
-      if (response.ok) {
-        console.log('Product deleted. Refreshing table...')
-        await fetchProducts()
-      } else {
-        console.error(`Failed to delete. Server responded with ${response.status}`)
-      }
-    } catch {
-      console.error('Error during delete request:')
-    }
   }
 
 </script>

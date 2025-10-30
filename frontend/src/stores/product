@@ -1,16 +1,15 @@
-import axios from "axios";
-
 import { defineStore } from "pinia";
 
 import { ref } from "vue";
 
 // defineStore('id', setup_function)
 // 'products' is the unique ID of this store
-export const useProductStore = defineStore("products", () => {
+export const useProductStore = defineStore("product", () => {
   // 1. STATE
   // These are the refs that used to be in App.vue
   const products = ref([]);
   const loading = ref(true);
+
 
   async function fetchProducts() {
     loading.value = true;
@@ -44,9 +43,10 @@ export const useProductStore = defineStore("products", () => {
     }
   }
 
-  async function removeProduct(productId) {
+  async function removeProduct(productData) {
     try {
-      await axios.delete("/products/${productId}");
+      id = productData.id;
+      await axios.delete("/products/${id}");
 
       await fetchProducts();
     } catch (error) {
