@@ -104,7 +104,7 @@
         <v-btn
           color="blue-darken-1"
           variant="flat"
-          @click="productStore.createNewProduct"
+          @click="productStore.saveProduct"
         >
           Save
         </v-btn>
@@ -117,12 +117,7 @@
 import { onMounted, ref } from "vue";
 import { useProductStore } from "@/stores/product.js";
 
-// 1. STATE
-const products = ref([]);
-
 const productStore = useProductStore();
-
-const loading = productStore.loading;
 
 const headers = ref([
   { title: "Name", key: "name", minWidth: "100px", sortable: false },

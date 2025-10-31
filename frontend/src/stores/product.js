@@ -21,15 +21,18 @@ export const useProductStore = defineStore("product", () => {
     }
   }
 
+  async function saveProduct(product){
+    
+  }
+
   async function createNewProduct(productData) {
     try {
-      
       await axios.post("/products", productData);
 
       await fetchProducts();
     } catch (error) {
       console.error("Error during create request:", error);
-    } 
+    }
   }
 
   async function updateProduct(productData) {
@@ -39,13 +42,12 @@ export const useProductStore = defineStore("product", () => {
       await fetchProducts();
     } catch (error) {
       console.error("Error during update request: ", error);
-    } 
+    }
   }
 
-  async function removeProduct(productData) {
+  async function removeProduct(productId) {
     try {
-      id = productData.id;
-      await axios.delete("/products/${id}");
+      await axios.delete("/products/" + productId);
 
       await fetchProducts();
     } catch (error) {
