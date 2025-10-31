@@ -7,7 +7,8 @@ import { ref } from "vue";
 export const useProductStore = defineStore("product", () => {
   const products = ref([]);
   const loading = ref(true);
-  const state = ref("");
+  //create or edit
+  const modalState = ref("create");
 
   async function fetchProducts() {
     loading.value = true;
@@ -21,8 +22,17 @@ export const useProductStore = defineStore("product", () => {
     }
   }
 
-  async function saveProduct(product){
-    
+  async function saveProduct(product) {
+    try {
+      if (modalState.value === "create") {
+        createNewProduct(product);
+        return;
+      }
+
+      updateProduct(product);
+    } catch (error) {
+      console.error("failed to save product: ", error);
+    }
   }
 
   async function createNewProduct(productData) {
@@ -58,6 +68,7 @@ export const useProductStore = defineStore("product", () => {
   return {
     products,
     loading,
+    modalState,
     fetchProducts,
     createNewProduct,
     updateProduct,
