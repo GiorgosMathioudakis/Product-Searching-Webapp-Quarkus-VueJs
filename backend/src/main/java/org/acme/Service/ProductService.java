@@ -16,7 +16,7 @@ public class ProductService {
 
     @Inject
     StatelessSession statelessSession;
-
+    
     @Inject
     EntityManager em;
 

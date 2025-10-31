@@ -1,5 +1,4 @@
 <template>
-
   <v-card class="elevation-2">
     <v-toolbar color="surface" density="compact">
       <v-toolbar-title>Products</v-toolbar-title>
@@ -17,8 +16,8 @@
       class="elevation-1"
       :headers="headers"
       item-value="id"
-      :items="products"
-      :loading="loading"
+      :items="productStore.products"
+      :loading="productStore.loading"
       loading-text="Loading products..."
       no-data-text="No products found."
     >
@@ -102,136 +101,112 @@
         <v-btn color="blue-grey-darken-1" variant="text" @click="closeDialog">
           Cancel
         </v-btn>
-        <v-btn color="blue-darken-1" variant="flat" @click=productStore.createNewProduct>
+        <v-btn
+          color="blue-darken-1"
+          variant="flat"
+          @click="productStore.createNewProduct"
+        >
           Save
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
-
 </template>
 
 <script setup>
-  import { onMounted, ref } from 'vue'
-  import { useProductStore } from '@/stores/product.js';
+import { onMounted, ref } from "vue";
+import { useProductStore } from "@/stores/product.js";
 
-  // 1. STATE
-  const products = ref([])
+// 1. STATE
+const products = ref([]);
 
-  const productStore = useProductStore();
+const productStore = useProductStore();
 
-  const loading = ref(true)
+const loading = productStore.loading;
 
-  const headers = ref([
-    { title: 'Name', key: 'name', minWidth: '100px', sortable: false },
-    { title: 'Price', key: 'price' },
-    { title: 'SKU', key: 'sku', sortable: false },
-    {
-      title: 'Description',
-      key: 'description',
-      minWidth: '150px',
-      sortable: false,
-    },
-    { title: 'Created On', key: 'createdOn' },
-    { title: 'Updated On', key: 'updatedOn' },
-    {
-      title: 'Actions',
-      key: 'actions',
-      sortable: false,
-      align: 'end',
-      width: '120px',
-    },
-  ])
+const headers = ref([
+  { title: "Name", key: "name", minWidth: "100px", sortable: false },
+  { title: "Price", key: "price" },
+  { title: "SKU", key: "sku", sortable: false },
+  {
+    title: "Description",
+    key: "description",
+    minWidth: "150px",
+    sortable: false,
+  },
+  { title: "Created On", key: "createdOn" },
+  { title: "Updated On", key: "updatedOn" },
+  {
+    title: "Actions",
+    key: "actions",
+    sortable: false,
+    align: "end",
+    width: "120px",
+  },
+]);
 
-  const dialogVisible = ref(false) // Controls if the dialog is open
-  const dialogTitle = ref('') // Holds the title "New Product" or "Edit Product"
-  const isEditMode = ref(false) // Tracks if we are editing or creating
+const dialogVisible = ref(false); // Controls if the dialog is open
+const dialogTitle = ref(""); // Holds the title "New Product" or "Edit Product"
+const isEditMode = ref(false); // Tracks if we are editing or creating
 
-  const productForm = ref({
+const productForm = ref({
+  id: null,
+  name: "",
+  sku: "",
+  description: "",
+  price: 0,
+});
+
+onMounted(async () => {
+  await productStore.fetchProducts();
+});
+
+function formatDateTime(isoString) {
+  if (!isoString) return "N/A";
+
+  const date = new Date(isoString);
+
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  return date.toLocaleString(undefined, options);
+}
+
+function openCreateDialog() {
+  isEditMode.value = false;
+  dialogTitle.value = "New Product";
+
+  productForm.value = {
     id: null,
-    name: '',
-    sku: '',
-    description: '',
+    name: "",
+    sku: "",
+    description: "",
     price: 0,
-  })
+  };
 
-  // 2. LIFECYCLE
-  // onMounted is a Vue hook that runs once when the component is
-  // first added to the page. Perfect for fetching initial data.
-  onMounted(async () => {
-    await fetchProducts()
-  })
+  dialogVisible.value = true;
+}
 
-  // 3. METHODS
-  async function fetchProducts () {
-    loading.value = true
-    try {
-      const response = await fetch('/products')
+function openEditDialog(product) {
+  isEditMode.value = true;
+  dialogTitle.value = "Edit Product";
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+  // Load a *copy* of the product's data into the form
+  // We use {...product} to make a copy, so we don't
+  // accidentally change the table data if the user cancels.
+  productForm.value = { ...product };
 
-      products.value = await response.json()
-    } catch (error) {
-      console.error('Failed to fetch products:', error)
-    } finally {
-      loading.value = false
-    }
-  }
+  dialogVisible.value = true;
+}
 
-  function formatDateTime (isoString) {
-    if (!isoString) return 'N/A'
-
-    const date = new Date(isoString)
-
-    // Define the desired format
-    const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    }
-
-    // By passing 'undefined' as the first argument, we tell
-    // toLocaleString() to use the browser's default locale (language).
-    // It will *also* automatically use the browser's default timezone.
-    return date.toLocaleString(undefined, options)
-  }
-
-  function openCreateDialog () {
-    isEditMode.value = false
-    dialogTitle.value = 'New Product'
-
-    // Reset the form to its default empty state
-    productForm.value = {
-      id: null,
-      name: '',
-      sku: '',
-      description: '',
-      price: 0,
-    }
-
-    dialogVisible.value = true
-  }
-
-  function openEditDialog (product) {
-    isEditMode.value = true
-    dialogTitle.value = 'Edit Product'
-
-    // Load a *copy* of the product's data into the form
-    // We use {...product} to make a copy, so we don't
-    // accidentally change the table data if the user cancels.
-    productForm.value = { ...product }
-
-    dialogVisible.value = true
-  }
-
-  function closeDialog () {
-    dialogVisible.value = false
-  }
-
+function closeDialog() {
+  dialogVisible.value = false;
+}
 </script>
 
 <style scoped>

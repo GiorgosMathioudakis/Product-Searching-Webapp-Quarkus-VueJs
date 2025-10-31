@@ -1,15 +1,13 @@
 import { defineStore } from "pinia";
 
+import axios from "axios";
+
 import { ref } from "vue";
 
-// defineStore('id', setup_function)
-// 'products' is the unique ID of this store
 export const useProductStore = defineStore("product", () => {
-  // 1. STATE
-  // These are the refs that used to be in App.vue
   const products = ref([]);
   const loading = ref(true);
-
+  const state = ref("");
 
   async function fetchProducts() {
     loading.value = true;
@@ -25,12 +23,13 @@ export const useProductStore = defineStore("product", () => {
 
   async function createNewProduct(productData) {
     try {
+      
       await axios.post("/products", productData);
 
       await fetchProducts();
     } catch (error) {
       console.error("Error during create request:", error);
-    }
+    } 
   }
 
   async function updateProduct(productData) {
@@ -40,7 +39,7 @@ export const useProductStore = defineStore("product", () => {
       await fetchProducts();
     } catch (error) {
       console.error("Error during update request: ", error);
-    }
+    } 
   }
 
   async function removeProduct(productData) {
@@ -54,15 +53,9 @@ export const useProductStore = defineStore("product", () => {
     }
   }
 
-  // 3. RETURN
-  // You must return all the state and actions that
-  // your components will need to access.
   return {
-    // State
     products,
     loading,
-
-    // Actions
     fetchProducts,
     createNewProduct,
     updateProduct,
