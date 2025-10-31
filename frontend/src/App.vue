@@ -56,9 +56,9 @@
   </v-card>
 
   <Dialog
-    productForm="productForm"
     v-model="dialogVisible"
     dialogTitle="dialogTitle"
+    productForm="productForm"
   ></Dialog>
 </template>
 
@@ -143,10 +143,6 @@ function openEditDialog(product) {
   productForm.value = { ...product };
 
   dialogVisible.value = true;
-}
-
-function closeDialog() {
-  dialogVisible.value = false;
 }
 </script>
 
