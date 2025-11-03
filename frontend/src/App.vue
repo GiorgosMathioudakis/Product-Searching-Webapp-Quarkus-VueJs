@@ -27,6 +27,7 @@ const headers = ref([
 ]);
 
 const dialogVisible = ref(false);
+const dialogTitle = ref("");
 const isEditMode = ref(false);
 
 const productForm = ref({
@@ -59,6 +60,7 @@ function formatDateTime(isoString) {
 
 function openCreateDialog() {
   isEditMode.value = false;
+  dialogTitle.value = "New Product";
 
   productForm.value = {
     id: null,
@@ -73,6 +75,7 @@ function openCreateDialog() {
 
 function openEditDialog(product) {
   isEditMode.value = true;
+  dialogTitle.value = "Edit product";
 
   productForm.value = { ...product };
 
@@ -145,6 +148,7 @@ function closeDialog() {
   <Dialog
     v-model="dialogVisible"
     :isEditMode="isEditMode"
+    :dialogTitle="dialogTitle"
     :product="productForm"
     :isVisible="dialogVisible"
     @close="closeDialog"

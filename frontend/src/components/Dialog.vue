@@ -7,6 +7,7 @@ const productStore = useProductStore();
 
 const props = defineProps({
   isEditMode: Boolean,
+  dialogTitle: String,
   product: {
     required: true,
   },
@@ -15,19 +16,17 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-
 function handleCloseDialog() {
   emit('close')
 }
 
-const dialogTitle = ref('')
-
 function handleSave(product) {
 
-  if(isEditMode.value) {
+  if(props.dialogTitle === 'Edit Product') {
+    console.log(props.dialogTitle)
     productStore.updateProduct(product)
   } else {
-    productStore.createProduct(product)
+    productStore.createNewProduct(product)
   }
 
   emit('close')
