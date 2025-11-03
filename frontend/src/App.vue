@@ -1,3 +1,90 @@
+<script setup>
+import { onMounted, ref } from "vue";
+import { useProductStore } from "@/stores/product.js";
+import Dialog from "@/components/Dialog.vue";
+
+const productStore = useProductStore();
+
+const headers = ref([
+  { title: "Name", key: "name", minWidth: "100px", sortable: false },
+  { title: "Price", key: "price" },
+  { title: "SKU", key: "sku", sortable: false },
+  {
+    title: "Description",
+    key: "description",
+    minWidth: "150px",
+    sortable: false,
+  },
+  { title: "Created On", key: "createdOn" },
+  { title: "Updated On", key: "updatedOn" },
+  {
+    title: "Actions",
+    key: "actions",
+    sortable: false,
+    align: "end",
+    width: "120px",
+  },
+]);
+
+const dialogVisible = ref(false);
+const isEditMode = ref(false);
+
+const productForm = ref({
+  id: null,
+  name: "",
+  sku: "",
+  description: "",
+  price: 0,
+});
+
+onMounted(async () => {
+  await productStore.fetchProducts();
+});
+
+function formatDateTime(isoString) {
+  if (!isoString) return "N/A";
+
+  const date = new Date(isoString);
+
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  return date.toLocaleString(undefined, options);
+}
+
+function openCreateDialog() {
+  isEditMode.value = false;
+
+  productForm.value = {
+    id: null,
+    name: "",
+    sku: "",
+    description: "",
+    price: 0,
+  };
+
+  dialogVisible.value = true;
+}
+
+function openEditDialog(product) {
+  isEditMode.value = true;
+
+  productForm.value = { ...product };
+
+  dialogVisible.value = true;
+}
+
+function closeDialog() {
+  dialogVisible.value = false;
+}
+
+</script>
+
 <template>
   <v-card class="elevation-2">
     <v-toolbar color="surface" density="compact">
@@ -57,94 +144,14 @@
 
   <Dialog
     v-model="dialogVisible"
-    dialogTitle="dialogTitle"
-    productForm="productForm"
+    :isEditMode="isEditMode"
+    :product="productForm"
+    :isVisible="dialogVisible"
+    @close="closeDialog"
   ></Dialog>
 </template>
 
-<script setup>
-import { onMounted, ref } from "vue";
-import { useProductStore } from "@/stores/product.js";
-import Dialog from "@/components/Dialog.vue";
 
-const productStore = useProductStore();
-
-const headers = ref([
-  { title: "Name", key: "name", minWidth: "100px", sortable: false },
-  { title: "Price", key: "price" },
-  { title: "SKU", key: "sku", sortable: false },
-  {
-    title: "Description",
-    key: "description",
-    minWidth: "150px",
-    sortable: false,
-  },
-  { title: "Created On", key: "createdOn" },
-  { title: "Updated On", key: "updatedOn" },
-  {
-    title: "Actions",
-    key: "actions",
-    sortable: false,
-    align: "end",
-    width: "120px",
-  },
-]);
-
-const dialogVisible = ref(false); // Controls if the dialog is open
-const dialogTitle = ref(""); // Holds the title "New Product" or "Edit Product"
-const isEditMode = ref(false); // Tracks if we are editing or creating
-
-const productForm = ref({
-  id: null,
-  name: "",
-  sku: "",
-  description: "",
-  price: 0,
-});
-
-onMounted(async () => {
-  await productStore.fetchProducts();
-});
-
-function formatDateTime(isoString) {
-  if (!isoString) return "N/A";
-
-  const date = new Date(isoString);
-
-  const options = {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-
-  return date.toLocaleString(undefined, options);
-}
-
-function openCreateDialog() {
-  dialogTitle.value = "New Product";
-
-  productForm.value = {
-    id: null,
-    name: "",
-    sku: "",
-    description: "",
-    price: 0,
-  };
-
-  dialogVisible.value = true;
-}
-
-function openEditDialog(product) {
-  isEditMode.value = true;
-  dialogTitle.value = "Edit Product";
-
-  productForm.value = { ...product };
-
-  dialogVisible.value = true;
-}
-</script>
 
 <style scoped>
 :deep(th) {

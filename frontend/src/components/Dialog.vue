@@ -1,55 +1,70 @@
 <script setup>
 import { useProductStore } from "@/stores/product.js";
+import { ref, watch } from "vue";
 
 const productStore = useProductStore();
 
+
 const props = defineProps({
-  dialogTitle: {
-    type: String,
+  isEditMode: Boolean,
+  product: {
     required: true,
   },
-  productForm: {
-    required: true,
-  },
+  isVisible: Boolean,
 });
 
-function closeDialog() {
-  dialogVisible.value = false;
+const emit = defineEmits(['close'])
+
+
+function handleCloseDialog() {
+  emit('close')
 }
+
+const dialogTitle = ref('')
+
+function handleSave(product) {
+
+  if(isEditMode.value) {
+    productStore.updateProduct(product)
+  } else {
+    productStore.createProduct(product)
+  }
+
+  emit('close')
+}
+
 </script>
 
 <template>
-  <v-dialog max-width="600px" persistent>
+  <v-dialog v-if="isVisible" max-width="600px" persistent>
     <v-card>
-      <!-- The title is dynamic -->
       <v-card-title class="pa-4 bg-primary">
-        <span class="text-h5">{{ dialogTitle }}</span>
+        <span class="text-h5">{{ props.dialogTitle }}</span>
       </v-card-title>
 
       <v-card-text>
         <v-form>
           <v-container>
-            <!-- Form fields, bound to our productForm ref -->
             <v-text-field
-              v-model="productForm.name"
+              v-model="product.name"
               density="compact"
               label="Name"
               variant="outlined"
             />
             <v-text-field
-              v-model="productForm.sku"
+              v-model="product.sku"
               density="compact"
               label="SKU"
               variant="outlined"
             />
             <v-text-field
-              v-model="productForm.description"
+              v-model="product.description"
               density="compact"
               label="Description"
               variant="outlined"
             />
             <v-text-field
-              v-model.number="productForm.price"
+              v-model.number="product.price"
               density="compact"
               label="Price"
               prefix="$"
@@ -62,13 +77,13 @@ function closeDialog() {
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="blue-grey-darken-1" variant="text" @click="closeDialog">
+        <v-btn color="blue-grey-darken-1" variant="text" @click="handleCloseDialog">
           Cancel
         </v-btn>
         <v-btn
           color="blue-darken-1"
           variant="flat"
-          @click="productStore.saveProduct(productForm)"
+          @click="handleSave(product)"
         >
           Save
         </v-btn>
