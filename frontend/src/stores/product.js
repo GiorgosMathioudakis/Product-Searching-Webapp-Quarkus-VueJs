@@ -22,19 +22,6 @@ export const useProductStore = defineStore("product", () => {
     }
   }
 
-  async function saveProduct(product) {
-    try {
-      if (modalState.value === "create") {
-        createNewProduct(product);
-        return;
-      }
-
-      updateProduct(product);
-    } catch (error) {
-      console.error("failed to save product: ", error);
-    }
-  }
-
   async function createNewProduct(productData) {
     try {
       await axios.post("/products", productData);
@@ -47,7 +34,8 @@ export const useProductStore = defineStore("product", () => {
 
   async function updateProduct(productData) {
     try {
-      await axios.put("/products/${productData.id}", productData);
+      console.log("product " + productData + " with id " + productData.id);
+      await axios.put(`http://localhost:8080/products/${productData.id}`,productData);
 
       await fetchProducts();
     } catch (error) {

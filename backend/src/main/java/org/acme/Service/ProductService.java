@@ -27,7 +27,7 @@ public class ProductService {
         Product existingProduct = statelessSession.get(Product.class, id);
 
         if(existingProduct == null) return false;
-
+        Log.info("inside updateProduct with id " + id);
         existingProduct.name = updatedProduct.name;
         existingProduct.sku = updatedProduct.sku;
         existingProduct.price = updatedProduct.price;

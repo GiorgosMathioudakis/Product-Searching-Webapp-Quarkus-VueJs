@@ -4,7 +4,6 @@ import { ref, watch } from "vue";
 
 const productStore = useProductStore();
 
-
 const props = defineProps({
   isEditMode: Boolean,
   dialogTitle: String,
@@ -14,24 +13,23 @@ const props = defineProps({
   isVisible: Boolean,
 });
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(["close"]);
 
 function handleCloseDialog() {
-  emit('close')
+  emit("close");
 }
 
 function handleSave(product) {
-
-  if(props.dialogTitle === 'Edit Product') {
-    console.log(props.dialogTitle)
+  if (props.isEditMode) {
+    console.log("edit");
     productStore.updateProduct(product)
   } else {
     productStore.createNewProduct(product)
+    console.log("create");
   }
 
-  emit('close')
+  emit("close");
 }
-
 </script>
 
 <template>
@@ -76,7 +74,11 @@ function handleSave(product) {
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="blue-grey-darken-1" variant="text" @click="handleCloseDialog">
+        <v-btn
+          color="blue-grey-darken-1"
+          variant="text"
+          @click="handleCloseDialog"
+        >
           Cancel
         </v-btn>
         <v-btn

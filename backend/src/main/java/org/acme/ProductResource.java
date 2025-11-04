@@ -1,5 +1,6 @@
 package org.acme;
 
+import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -8,7 +9,6 @@ import jakarta.ws.rs.core.Response;
 import org.acme.Model.Product;
 import org.acme.Service.ProductService;
 
-import java.net.URI;
 import java.util.List;
 
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
@@ -79,7 +79,7 @@ public class ProductResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProduct(Product product){
-
+        Log.fatal("inside createProduct");
         boolean created = productService.createProduct(product);
 
         if(created){
