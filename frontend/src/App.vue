@@ -29,6 +29,8 @@ const headers = ref([
 const dialogVisible = ref(false);
 const dialogTitle = ref("");
 const isEditMode = ref(false);
+const searchName = ref("");
+const searchSku = ref("");
 
 const productForm = ref({
   id: null,
@@ -90,6 +92,7 @@ function closeDialog() {
 
 <template>
   <v-card class="elevation-2">
+    
     <v-toolbar color="surface" density="compact">
       <v-toolbar-title>Products</v-toolbar-title>
       <v-spacer />
@@ -102,9 +105,36 @@ function closeDialog() {
         New Product
       </v-btn>
     </v-toolbar>
+    <v-card-text>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="searchName"
+            label="Search by Name"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            density="compact"
+            hide-details
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="searchSku"
+            label="Search by SKU"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            density="compact"
+            hide-details
+            clearable
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </v-card-text>
     <v-data-table
       class="elevation-1"
       :headers="headers"
+      :search="search"
       item-value="id"
       :items="productStore.products"
       :loading="productStore.loading"
