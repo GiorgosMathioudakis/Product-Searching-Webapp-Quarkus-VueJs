@@ -48,7 +48,7 @@ public class ProductResource {
             @QueryParam("name") String name,
             @QueryParam("sku") String sku
     ){
-        
+
         List<Product> products = productService.findAllProductsByNameAndSku(name,sku);
         return Response.ok(products).build();
     }

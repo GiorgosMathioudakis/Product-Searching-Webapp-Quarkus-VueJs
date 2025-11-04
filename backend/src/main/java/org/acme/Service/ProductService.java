@@ -24,13 +24,13 @@ public class ProductService {
 
         String s = (sku  == null || sku.isBlank())  ? null : sku.trim();
 
-        if(n == null || s == null) return findAllProducts();
+        if(n == null && s == null) return findAllProducts();
 
         return statelessSession.createNativeQuery("select * from product " +
                 "WHERE " +
-                "( name LIKE '%' || :n || '%' AND sku LIKE '%' || :s || '%' )" , Product.class)
-                .setParameter("n", n)
-                .setParameter("s", s)
+                "( UPPER(name) LIKE UPPER('%' || :n || '%') AND sku LIKE UPPER('%' || :s || '%') )" , Product.class)
+                .setParameter("n", n == null ? "" : n)
+                .setParameter("s", s == null ? "" : s)
                 .getResultList();
 
     }
