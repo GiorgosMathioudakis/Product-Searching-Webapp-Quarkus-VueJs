@@ -40,6 +40,19 @@ public class ProductResource {
         return Response.ok(products).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/search")
+    public Response getProductsByNameAndSku(
+            @QueryParam("name") String name,
+            @QueryParam("sku") String sku
+    ){
+        
+        List<Product> products = productService.findAllProductsByNameAndSku(name,sku);
+        return Response.ok(products).build();
+    }
+
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
