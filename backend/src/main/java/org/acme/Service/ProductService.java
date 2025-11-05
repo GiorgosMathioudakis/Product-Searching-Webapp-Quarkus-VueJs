@@ -17,8 +17,23 @@ public class ProductService {
     @Inject
     StatelessSession statelessSession;
 
-    @Inject
-    EntityManager em;
+    @Transactional
+    public List<Product> findAllProductsByNameAndSku(String name,String sku){
+
+        String n = (name == null || name.isBlank()) ? null : name.trim();
+
+        String s = (sku  == null || sku.isBlank())  ? null : sku.trim();
+
+        if(n == null && s == null) return findAllProducts();
+
+        return statelessSession.createNativeQuery("select * from product " +
+                "WHERE " +
+                "( UPPER(name) LIKE UPPER('%' || :n || '%') AND sku LIKE UPPER('%' || :s || '%') )" , Product.class)
+                .setParameter("n", n == null ? "" : n)
+                .setParameter("s", s == null ? "" : s)
+                .getResultList();
+
+    }
 
 
     @Transactional
@@ -30,6 +45,8 @@ public class ProductService {
 
         existingProduct.name = updatedProduct.name;
         existingProduct.sku = updatedProduct.sku;
+        existingProduct.price = updatedProduct.price;
+        existingProduct.description = updatedProduct.description;
 
         statelessSession.update(existingProduct);
 
@@ -43,6 +60,8 @@ public class ProductService {
 
         new_p.name=product.name;
         new_p.sku=product.sku;
+        new_p.price=product.price;
+        new_p.description=product.description;
 
         statelessSession.insert(new_p);
 
@@ -67,6 +86,7 @@ public class ProductService {
 
     @Transactional
     public List<Product> findAllProducts() {
+        Log.info("Finding all products");
         return statelessSession.createNativeQuery("select * from product" , Product.class).getResultList();
     }
 

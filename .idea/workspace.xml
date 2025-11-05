@@ -13,9 +13,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "GiorgosMathioudakis"
+  }
 }]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/GiorgosMathioudakis/Product-Searching-Webapp-Quarkus-VueJs-.git",
+    "accountId": "087ed08c-37ee-4259-9543-47a16bbaa818"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="33s5EiqtnJDaxcNvt7utnzpmaaK" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -25,8 +37,9 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "statelessSession",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/giorgosmath/repos/Product-Searching-Webapp-Quarkus-VueJs-",
     "node.js.detected.package.eslint": "true",
@@ -35,6 +48,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -54,6 +68,7 @@
       <option name="presentableId" value="Default" />
       <updated>1760092829552</updated>
       <workItem from="1760092830931" duration="1040000" />
+      <workItem from="1762329491552" duration="1653000" />
     </task>
     <servers />
   </component>
