@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useProductStore } from "@/stores/product.js";
 import Dialog from "@/components/Dialog.vue";
 
@@ -38,6 +38,18 @@ const productForm = ref({
   sku: "",
   description: "",
   price: 0,
+});
+
+const debouncedFetch = () => {
+
+  setTimeout(() => {
+    productStore.fetchProducts(searchName.value, searchSku.value);
+  }, 500);
+  
+};
+
+watch([searchName, searchSku], () => {
+  debouncedFetch();
 });
 
 onMounted(async () => {
@@ -92,7 +104,7 @@ function closeDialog() {
 
 <template>
   <v-card class="elevation-2">
-    
+
     <v-toolbar color="surface" density="compact">
       <v-toolbar-title>Products</v-toolbar-title>
       <v-spacer />
@@ -134,7 +146,6 @@ function closeDialog() {
     <v-data-table
       class="elevation-1"
       :headers="headers"
-      :search="search"
       item-value="id"
       :items="productStore.products"
       :loading="productStore.loading"

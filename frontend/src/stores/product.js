@@ -10,10 +10,19 @@ export const useProductStore = defineStore("product", () => {
   //create or edit
   const modalState = ref("create");
 
-  async function fetchProducts() {
+  async function fetchProducts(name, sku) {
     loading.value = true;
     try {
-      const response = await axios.get("/products");
+      const params = new URLSearchParams();
+
+      if(name){
+        params.append('name',name);
+      }
+      if(sku){
+        params.append('sku', sku);
+      }
+
+      const response = await axios.get("/products/search", {params});
       products.value = response.data;
     } catch (error) {
       console.error("Failed to fetch products:", error);
