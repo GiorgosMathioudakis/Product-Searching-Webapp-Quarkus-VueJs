@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.acme.DTO.ProductPage;
 import org.acme.Model.Product;
 import org.acme.Service.ProductService;
 
@@ -32,7 +33,7 @@ public class ProductResource {
             @QueryParam("sortDir") String sortDir
     ){
 
-        List<Product> products = productService.fetchProducts(pageNo,pageSize,name,sku,sortBy,sortDir);
+        ProductPage products = productService.fetchProducts(pageNo,pageSize,name,sku,sortBy,sortDir);
         return Response.ok(products).build();
     }
 

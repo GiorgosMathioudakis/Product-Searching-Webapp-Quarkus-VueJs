@@ -1,3 +1,4 @@
+// oxlint-disable no-unused-vars
 import { defineStore } from "pinia";
 
 import axios from "axios";
@@ -5,25 +6,28 @@ import axios from "axios";
 import { ref } from "vue";
 
 export const useProductStore = defineStore("product", () => {
-  const products = ref([]);
+  const product = ref([]);
   const loading = ref(true);
-  //create or edit
-  const modalState = ref("create");
+  const hasNext = ref(false);
 
-  async function fetchProducts(name, sku) {
+  async function fetchProducts(name, sku, page, itemsPerPage, sortBy, sortDir) {
     loading.value = true;
     try {
+      
       const params = new URLSearchParams();
 
-      if(name){
-        params.append('name',name);
-      }
-      if(sku){
-        params.append('sku', sku);
-      }
+      params.append('name', name); 
+      params.append('sku', sku);
+      params.append('page', page);
+      params.append('pageSize', itemsPerPage);
+      params.append('sortBy', sortBy);
+      params.append('sortDir', sortDir);
 
-      const response = await axios.get("/products/search", {params});
-      products.value = response.data;
+
+      const response = await axios.get("/products", {params});
+      product.value = response.data.items;
+      hasMore.value = response.data.hasMore;
+
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
@@ -63,9 +67,8 @@ export const useProductStore = defineStore("product", () => {
   }
 
   return {
-    products,
+    product,
     loading,
-    modalState,
     fetchProducts,
     createNewProduct,
     updateProduct,

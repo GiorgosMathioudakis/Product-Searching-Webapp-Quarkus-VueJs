@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.acme.DTO.ProductPage;
 import org.acme.Model.Product;
 import org.hibernate.StatelessSession;
 
@@ -102,7 +103,7 @@ public class ProductService {
 
     }
 
-    public List<Product> fetchProducts(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
+    public ProductPage fetchProducts(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
 
         int offset = (pageNo-1)*pageSize;
 
@@ -121,13 +122,15 @@ public class ProductService {
             throw new IllegalArgumentException();
         }
 
-        return statelessSession.createNativeQuery(
+        List<Product> productList = statelessSession.createNativeQuery(
                 query   , Product.class)
                 .setParameter("n" , n)
                 .setParameter("s" , s)
-//                .setParameter("sortBy" , sortBy)
                 .setParameter("limit", pageSize)
                 .setParameter("offset", offset)
                 .getResultList();
+
+        return ( new ProductPage(productList, pageSize) );
+
     }
 }
