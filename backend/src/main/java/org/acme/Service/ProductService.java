@@ -102,4 +102,32 @@ public class ProductService {
 
     }
 
+    public List<Product> fetchProducts(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
+
+        int offset = (pageNo-1)*pageSize;
+
+        String n = (name == null || name.isBlank()) ? "" : name.trim();
+
+        String s = (sku  == null || sku.isBlank())  ? "" : sku.trim();
+
+        String query = "SELECT * FROM product " +
+                "WHERE " +
+                "( UPPER(name) LIKE UPPER('%' || :n || '%') AND sku LIKE UPPER('%' || :s || '%') ) ";
+        if (sortDir.equals("ASC")) {
+            query += "ORDER BY " + sortBy + " ASC LIMIT :limit OFFSET :offset";
+        } else if (sortDir.equals("DESC")) {
+            query += "ORDER BY " + sortBy + " DESC LIMIT :limit OFFSET :offset";
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        return statelessSession.createNativeQuery(
+                query   , Product.class)
+                .setParameter("n" , n)
+                .setParameter("s" , s)
+//                .setParameter("sortBy" , sortBy)
+                .setParameter("limit", pageSize)
+                .setParameter("offset", offset)
+                .getResultList();
+    }
 }

@@ -22,36 +22,17 @@ public class ProductResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/page")
-    public Response getProductsPage(
-            @QueryParam("pageNo") int pageNo,
-            @QueryParam("pageSize") int pageSize
-    ){
-
-        List<Product> products = productService.getPage(pageNo,pageSize);
-
-        return Response.ok(products).build();
-
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAllProducts(){
-        List<Product> products = productService.findAllProducts();
-        return Response.ok(products).build();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/search")
     public Response getProductsByNameAndSku(
+            @QueryParam("pageNo") int pageNo,
+            @QueryParam("pageSize") int pageSize,
             @QueryParam("name") String name,
-            @QueryParam("sku") String sku
+            @QueryParam("sku") String sku,
+            @QueryParam("sortBy") String sortBy,
+            @QueryParam("sortDir") String sortDir
     ){
 
-        List<Product> products = productService.findAllProductsByNameAndSku(name,sku);
+        List<Product> products = productService.fetchProducts(pageNo,pageSize,name,sku,sortBy,sortDir);
         return Response.ok(products).build();
     }
 
