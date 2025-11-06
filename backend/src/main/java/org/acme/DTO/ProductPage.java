@@ -1,17 +1,20 @@
 package org.acme.DTO;
 
+import jakarta.inject.Inject;
+import lombok.NoArgsConstructor;
 import org.acme.Model.Product;
 
 import java.util.List;
 
+@NoArgsConstructor
 public class ProductPage {
-    private List<Product> products;
-    private boolean hasNext;
+    @Inject
+    public List<Product> products;
 
-    public ProductPage() {}
+    public boolean hasNext;
 
     public ProductPage(List<Product> products, int pageSize) {
-        if(products.size()<pageSize){
+        if(products.size()<=pageSize){
             this.products = products;
             this.hasNext = false;
         }else{

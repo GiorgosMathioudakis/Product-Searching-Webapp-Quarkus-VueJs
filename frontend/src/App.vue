@@ -7,11 +7,11 @@ const productStore = useProductStore();
 
 const headers = ref([
   { title: "Name", key: "name", minWidth: "100px", sortable: false },
-  { title: "Price", key: "price", sortable: false }, 
+  { title: "Price", key: "price", sortable: false },
   { title: "SKU", key: "sku", sortable: false },
   { title: "Description", key: "description", minWidth: "150px", sortable: false },
-  { title: "Created On", key: "createdOn", sortable: false }, 
-  { title: "Updated On", key: "updatedOn", sortable: false }, 
+  { title: "Created On", key: "createdOn", sortable: false },
+  { title: "Updated On", key: "updatedOn", sortable: false },
   { title: "Actions", key: "actions", sortable: false, align: "end", width: "120px" },
 ]);
 
@@ -22,21 +22,43 @@ const searchName = ref("");
 const searchSku = ref("");
 const sortBy = ref("createdOn");
 const sortDir = ref("desc");
+const pageNo = ref(1);
+const pageSize = ref(10);
+
+
+const  {
+  items,
+  loading,
+  error,
+  currentPage,
+  hasPrev,
+  hasNext,
+  refetch,
+  } = productStore.fetchProducts({
+    searchName,
+    searchSku,
+    pageNo,
+    pageSize,
+    sortBy,
+    sortDir
+  });
+
+
+const tableOptions = ref({
+  currentPage: 1,
+  itemsPerPage: 10
+});
 
 const sortableColumns = ref([
-  { title: "Date Created", value: "createdOn" },
-  { title: "Date Updated", value: "updatedOn" },
+  { title: "Date Created", value: "created_on" },
+  { title: "Date Updated", value: "updated_on" },
   { title: "Price", value: "price" },
 ]);
 const sortDirections = ref([
-  { title: "Descending", value: "desc" },
-  { title: "Ascending", value: "asc" },
+  { title: "Descending", value: "DESC" },
+  { title: "Ascending", value: "ASC" },
 ]);
 
-const tableOptions = ref({
-  page: 1,
-  itemsPerPage: 10
-});
 
 const product = ref({
   id: null,
@@ -49,7 +71,7 @@ const product = ref({
 let debounceTimer;
 
 watch(
-  [searchName, searchSku, tableOptions, sortBy, sortDir], 
+  [searchName, searchSku, tableOptions, sortBy, sortDir],
   () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
@@ -64,8 +86,8 @@ watch(
     }, 400);
   },
   {
-    deep: true,      
-    immediate: true, 
+    deep: true,
+    immediate: true,
   }
 );
 
@@ -169,7 +191,7 @@ function closeDialog() {
             v-model="sortDir"
             :items="sortDirections"
             label="Direction"
-            variant="outlined" 
+            variant="outlined"
             density="compact"
             hide-details
           ></v-select>
@@ -186,6 +208,7 @@ function closeDialog() {
       no-data-text="No products found."
       v-model:items-per-page="tableOptions.itemsPerPage"
       @update:options="tableOptions = $event"
+      hide-default-footer
     >
       <template #item.price="{ item }">
         <span>${{ item.price.toFixed(2) }}</span>
@@ -217,6 +240,24 @@ function closeDialog() {
           variant="text"
           @click="productStore.removeProduct(item.id)"
         />
+      </template>
+      <template v-slot:bottom>
+        <div class="text-center dark pt-2">
+          <div>
+            Items Per Page:
+          </div>
+          <select>
+            <option
+              v-for="option in [5, 10, 15, 20]"
+              :key="option"
+              :value="option"
+              @click="tableOptions.itemsPerPage = option"
+              ></option>
+          </select>
+          <v-pagination
+            v-model="page"
+          ></v-pagination>
+        </div>
       </template>
     </v-data-table-server>
   </v-card>
