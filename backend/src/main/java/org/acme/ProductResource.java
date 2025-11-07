@@ -34,6 +34,7 @@ public class ProductResource {
     ){
 
         ProductPage products = productService.fetchProducts(pageNo,pageSize,name,sku,sortBy,sortDir);
+
         return Response.ok(products).build();
     }
 

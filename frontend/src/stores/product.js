@@ -4,35 +4,34 @@ import { defineStore } from "pinia";
 import axios from "axios";
 
 import { ref } from "vue";
+import { VListItemSubtitle } from "vuetify/components";
 
 export const useProductStore = defineStore("product", () => {
   const product = ref([]);
   const loading = ref(true);
   const hasNext = ref(false);
+  const items = ref();
+  const hasPrev = ref(true);
 
-  async function fetchProducts(name, sku, page, itemsPerPage, sortBy, sortDir) {
+  async function fetchProducts(params) {
     loading.value = true;
     try {
-      
-      const params = new URLSearchParams();
 
-      params.append('name', name); 
-      params.append('sku', sku);
-      params.append('page', page);
-      params.append('pageSize', itemsPerPage);
-      params.append('sortBy', sortBy);
-      params.append('sortDir', sortDir);
+      loading.value = true;
 
+      const response = await axios.get(`http://localhost:8080/products`, {params});
 
-      const response = await axios.get("/products", {params});
-      product.value = response.data.items;
-      hasMore.value = response.data.hasMore;
+      items.value = response.data.products;
+      hasNext.value = response.data.hasNext;
+      hasPrev.value = ( params.pageNo > 1);
 
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
       loading.value = false;
     }
+
+    
   }
 
   async function createNewProduct(productData) {
@@ -68,6 +67,9 @@ export const useProductStore = defineStore("product", () => {
 
   return {
     product,
+    items,
+    hasNext,
+    hasPrev,
     loading,
     fetchProducts,
     createNewProduct,

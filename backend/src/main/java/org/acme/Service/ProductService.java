@@ -105,6 +105,8 @@ public class ProductService {
 
     public ProductPage fetchProducts(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
 
+//        System.out.println("pageNo: " + pageNo +"pageSize: " + pageSize + "name: "+ name+ "sku: " + sku+ "sortby: " + sortBy+ "sortdir: " +sortDir);
+
         int offset = (pageNo-1)*pageSize;
 
         String n = (name == null || name.isBlank()) ? "" : name.trim();
@@ -113,7 +115,7 @@ public class ProductService {
 
         String query = "SELECT * FROM product " +
                 "WHERE " +
-                "( UPPER(name) LIKE UPPER('%' || :n || '%') AND sku LIKE UPPER('%' || :s || '%') ) ";
+                "( UPPER(name) LIKE UPPER('%' || :n || '%') AND UPPER(sku) LIKE UPPER('%' || :s || '%') ) ";
         if (sortDir.equals("ASC")) {
             query += "ORDER BY " + sortBy + " ASC LIMIT :limit OFFSET :offset";
         } else if (sortDir.equals("DESC")) {
@@ -126,7 +128,7 @@ public class ProductService {
                 query   , Product.class)
                 .setParameter("n" , n)
                 .setParameter("s" , s)
-                .setParameter("limit", pageSize)
+                .setParameter("limit", pageSize+1)
                 .setParameter("offset", offset)
                 .getResultList();
 

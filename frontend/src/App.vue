@@ -20,34 +20,13 @@ const dialogTitle = ref("");
 const isEditMode = ref(false);
 const searchName = ref("");
 const searchSku = ref("");
-const sortBy = ref("createdOn");
-const sortDir = ref("desc");
+const sortBy = ref("created_on");
+const sortDir = ref("DESC");
 const pageNo = ref(1);
 const pageSize = ref(10);
 
 
-const  {
-  items,
-  loading,
-  error,
-  currentPage,
-  hasPrev,
-  hasNext,
-  refetch,
-  } = productStore.fetchProducts({
-    searchName,
-    searchSku,
-    pageNo,
-    pageSize,
-    sortBy,
-    sortDir
-  });
 
-
-const tableOptions = ref({
-  currentPage: 1,
-  itemsPerPage: 10
-});
 
 const sortableColumns = ref([
   { title: "Date Created", value: "created_on" },
@@ -71,18 +50,19 @@ const product = ref({
 let debounceTimer;
 
 watch(
-  [searchName, searchSku, tableOptions, sortBy, sortDir],
+  [searchName, searchSku, pageSize ,pageNo , sortBy, sortDir],
   () => {
+
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      productStore.fetchProducts(
-        searchName.value,
-        searchSku.value,
-        tableOptions.value.page,
-        tableOptions.value.itemsPerPage,
-        sortBy.value,
-        sortDir.value
-      );
+        productStore.fetchProducts({
+          name: searchName.value,
+          sku: searchSku.value,
+          pageNo: pageNo.value,
+          pageSize: pageSize.value,
+          sortBy: sortBy.value,
+          sortDir: sortDir.value
+        });
     }, 400);
   },
   {
@@ -202,12 +182,11 @@ function closeDialog() {
       class="elevation-1"
       :headers="headers"
       item-value="id"
-      :items="productStore.product"
+      :items="productStore.items"
       :loading="productStore.loading"
       loading-text="Loading products..."
       no-data-text="No products found."
-      v-model:items-per-page="tableOptions.itemsPerPage"
-      @update:options="tableOptions = $event"
+      v-model:items-per-page="pageSize"
       hide-default-footer
     >
       <template #item.price="{ item }">
@@ -242,22 +221,32 @@ function closeDialog() {
         />
       </template>
       <template v-slot:bottom>
-        <div class="text-center dark pt-2">
-          <div>
-            Items Per Page:
-          </div>
-          <select>
-            <option
-              v-for="option in [5, 10, 15, 20]"
-              :key="option"
-              :value="option"
-              @click="tableOptions.itemsPerPage = option"
-              ></option>
-          </select>
-          <v-pagination
-            v-model="page"
-          ></v-pagination>
-        </div>
+        <v-card-text>
+          <v-row align="center" justify="space-between">
+            
+            <v-col cols="4" md="2">
+              <v-select
+                v-model="pageSize"
+                :items="[5, 10, 15, 20,97]"
+                label="Items per page"
+                density="compact"
+                hide-details
+                variant="outlined"
+              ></v-select>
+            </v-col>
+
+            <v-col cols="8" md="10">
+              <v-pagination
+                v-model="pageNo"
+                :length="productStore.hasNext ? pageNo + 1 : pageNo" 
+                :total-visible="5"
+                density="compact"
+                class="float-right"
+              ></v-pagination>
+            </v-col>
+
+          </v-row>
+        </v-card-text>
       </template>
     </v-data-table-server>
   </v-card>
