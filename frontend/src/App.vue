@@ -50,10 +50,41 @@ const product = ref({
 let debounceTimer;
 
 watch(
-  [searchName, searchSku, pageSize ,pageNo , sortBy, sortDir],
+  [searchName, searchSku, pageSize , sortBy, sortDir],
   () => {
 
+    if(pageNo.value !== 1){
+
+      pageNo.value = 1;
+
+    }else{
+    
+      clearTimeout(debounceTimer);
+
+      debounceTimer = setTimeout(() => {
+          productStore.fetchProducts({
+            name: searchName.value,
+            sku: searchSku.value,
+            pageNo: pageNo.value,
+            pageSize: pageSize.value,
+            sortBy: sortBy.value,
+            sortDir: sortDir.value
+          });
+      }, 400);
+
+    }
+  },
+  {
+    deep: true,
+  } 
+);
+
+
+watch(
+  [pageNo],
+  () => {
     clearTimeout(debounceTimer);
+
     debounceTimer = setTimeout(() => {
         productStore.fetchProducts({
           name: searchName.value,
@@ -66,10 +97,9 @@ watch(
     }, 400);
   },
   {
-    deep: true,
     immediate: true,
   }
-);
+)
 
 function formatDateTime(isoString) {
   if (!isoString) return "N/A";
