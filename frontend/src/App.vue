@@ -252,7 +252,7 @@ function closeDialog() {
       </template>
       <template v-slot:bottom>
         <v-card-text>
-          <v-row align="center" justify="space-between">
+          <v-row align="center" justify="center">
             
             <v-col cols="4" md="2">
               <v-select
@@ -265,7 +265,7 @@ function closeDialog() {
               ></v-select>
             </v-col>
 
-            <v-col cols="8" md="10">
+            <v-col cols="8" md="2">
               <v-pagination
                 v-model="pageNo"
                 :length="productStore.hasNext ? pageNo + 1 : pageNo" 
