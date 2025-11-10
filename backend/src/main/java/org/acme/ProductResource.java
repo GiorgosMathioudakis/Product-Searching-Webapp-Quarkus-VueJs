@@ -75,7 +75,7 @@ public class ProductResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProduct(Product product){
-        Log.fatal("inside createProduct");
+
         boolean created = productService.createProduct(product);
 
         if(created){
