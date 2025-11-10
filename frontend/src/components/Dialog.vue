@@ -1,6 +1,6 @@
 <script setup>
 import { useProductStore } from "@/stores/product.js";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 
 const productStore = useProductStore();
 
@@ -8,10 +8,13 @@ const props = defineProps({
   isEditMode: Boolean,
   dialogTitle: String,
   product: {
+    type: Object,
     required: true,
   },
   isVisible: Boolean,
 });
+
+const localproduct = ref({ ...props.product });
 
 const emit = defineEmits(["close"]);
 
@@ -19,17 +22,18 @@ function handleCloseDialog() {
   emit("close");
 }
 
-function handleSave(product) {
+function handleSave() {
   if (props.isEditMode) {
-    console.log("edit");
-    productStore.updateProduct(product)
+    console.log("edit", localproduct.value);
+    productStore.updateProduct(localproduct.value);
   } else {
-    productStore.createNewProduct(product)
-    console.log("create");
+    console.log("create", localproduct.value);
+    productStore.createNewProduct(localproduct.value);
   }
 
   emit("close");
 }
+
 </script>
 
 <template>
@@ -43,25 +47,25 @@ function handleSave(product) {
         <v-form>
           <v-container>
             <v-text-field
-              v-model="product.name"
+              v-model="localproduct.name"
               density="compact"
               label="Name"
               variant="outlined"
             />
             <v-text-field
-              v-model="product.sku"
+              v-model="localproduct.sku"
               density="compact"
               label="SKU"
               variant="outlined"
             />
             <v-text-field
-              v-model="product.description"
+              v-model="localproduct.description"
               density="compact"
               label="Description"
               variant="outlined"
             />
             <v-text-field
-              v-model.number="product.price"
+              v-model.number="localproduct.price"
               density="compact"
               label="Price"
               prefix="$"
@@ -84,7 +88,7 @@ function handleSave(product) {
         <v-btn
           color="blue-darken-1"
           variant="flat"
-          @click="handleSave(product)"
+          @click="handleSave"
         >
           Save
         </v-btn>

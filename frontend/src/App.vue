@@ -138,10 +138,11 @@ function openCreateDialog() {
 function openEditDialog(product) {
   isEditMode.value = true;
   dialogTitle.value = "Edit product";
-
+  
   product.value = { ...product };
 
   dialogVisible.value = true;
+
 }
 
 function closeDialog() {
@@ -250,22 +251,13 @@ function closeDialog() {
           icon="mdi-delete"
           size="small"
           variant="text"
-          @click="productStore.removeProduct(item.id , 
-          {
-          name: searchName.value,
-          sku: searchSku.value,
-          pageNo: pageNo.value,
-          pageSize: pageSize.value,
-          sortBy: sortBy.value,
-          sortDir: sortDir.value
-        })"
+          @click="productStore.removeProduct(item.id)"
         />
       </template>
       <template v-slot:bottom>
         <v-card-text>
           <v-row align="center" justify="center">
-            
-            <v-col cols="12" md="2">
+            <v-col cols="auto">
               <v-select
                 v-model="pageSize"
                 :items="[10, 15, 20,97]"
@@ -276,7 +268,7 @@ function closeDialog() {
               ></v-select>
             </v-col>
 
-            <v-col cols="12" md="2">
+            <v-col cols="auto">
               <v-pagination
                 v-model="pageNo"
                 :length="productStore.hasNext ? pageNo + 1 : pageNo" 
