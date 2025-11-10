@@ -4,6 +4,7 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import org.acme.DTO.ProductPage;
 import org.acme.Model.Product;
 import org.acme.Service.ProductService;
 import org.hibernate.StatelessSession;
@@ -63,29 +64,6 @@ public class ProductServiceTest {
     }
 
     @Test
-    void givenGetAll_returnsAllProducts() {
-
-        List<Product> products = new ArrayList<>();
-        products.add(product);
-
-        Mockito.when(statelessSession.createNativeQuery(
-                Mockito.anyString(),
-                Mockito.eq(Product.class))
-        ).thenReturn(mockQuery);
-
-        Mockito.when(mockQuery.getResultList())
-                .thenReturn(products);
-
-        List<Product> result = productService.findAllProducts();
-
-        assertNotNull(result);
-        assertEquals(products, result);
-        assertEquals(1, result.size());
-        assertEquals("shirt", result.get(0).name);
-        assertEquals("CH1", result.get(0).sku);
-    }
-
-    @Test
     void deleteByIdOK() {
         Mockito.when(statelessSession.get(ArgumentMatchers.eq(Product.class), ArgumentMatchers.any())).thenReturn(product);
 
@@ -133,7 +111,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void getPageTest(){
+    void getProductsTest(){
         List<Product> products = new ArrayList<>();
 
         products.add(new Product("Hat","GR1",new BigDecimal(10),""));
@@ -151,13 +129,13 @@ public class ProductServiceTest {
         Mockito.when(mockQuery.getResultList())
                 .thenReturn(products.subList(1,2));
 
-        List<Product> result;
-        result = productService.getPage(2, 1);
+        ProductPage result = productService.fetchProducts(2, 1,"Shi" , "CH" , "price" , "DESC");
 
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Shirt", result.get(0).name);
-        assertEquals("CH1", result.get(0).sku);
+        assertEquals(1, result.products.size());
+        assertEquals("Shirt", result.products.get(0).name);
+        assertEquals("CH1", result.products.get(0).sku);
+        assertEquals(false, result.hasNext);
 
     }
 

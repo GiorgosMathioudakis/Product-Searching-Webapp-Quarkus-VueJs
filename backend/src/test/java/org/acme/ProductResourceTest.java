@@ -37,15 +37,19 @@ public class ProductResourceTest {
                 // Recreate the schema manually
                 stmt.execute("""
                 CREATE TABLE product (
-                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id BIGINT   auto_increment PRIMARY KEY,
                     name VARCHAR(255),
-                    sku VARCHAR(255)
+                    sku VARCHAR(255),
+                    price numeric(12,2),
+                    description VARCHAR(255),
+                    created_on TIMESTAMP WITH TIME ZONE,
+                    updated_on TIMESTAMP WITH TIME ZONE
                 )
             """);
 
                 // Insert seed data directly via SQL
-                stmt.execute("INSERT INTO product (name, sku) VALUES ('Hat', 'GR1')");
-                stmt.execute("INSERT INTO product (name, sku) VALUES ('Shirt', 'CH1')");
+                stmt.execute("INSERT INTO product (name, sku , price , description , created_on , updated_on) VALUES ('Hat', 'GR1' , '1' , 'description' , '2025-11-05 09:24:50.641386 +00:00' , '2025-11-05 09:24:50.641386 +00:00')");
+                stmt.execute("INSERT INTO product (name, sku , price , description , created_on , updated_on) VALUES ('Shirt', 'CH1' , '2' , 'description' , '2025-10-29 13:32:46.480509 +00:00' , '2025-10-29 13:32:46.480509 +00:00')");
             }
 
             connection.commit();
@@ -57,19 +61,6 @@ public class ProductResourceTest {
     void cleanup() {
         // TODO: clean up test products (jdbc)
 
-    }
-
-    @Test
-    void testGetAllProductsEndpoint() {
-        given()
-                .when().get("/products")
-                .then()
-                    .statusCode(200)
-                    .contentType(ContentType.JSON)
-                    .body("$", hasSize(2))
-                    .body("[0].name", notNullValue())
-                    .body("[0].sku", notNullValue())
-                    .body("name", hasItems("Hat", "Shirt"));
     }
 
     @Test
@@ -128,15 +119,20 @@ public class ProductResourceTest {
     }
 
     @Test
-    void testGetProductsPageEndpoint() {
+    void testGetProductsEndpoint() {
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("pageNo", 2)
+                .queryParam("pageNo", 1)
                 .queryParam("pageSize", 1)
-                .when().get("/products/page")
+                .queryParam("name" , "hat")
+                .queryParam("sku", "GR1")
+                .queryParam("sortDir" , "ASC")
+                .queryParam("sortBy" , "price")
+                .when().get("/products")
                 .then()
-                .body("[0].name", equalTo("Shirt"))
-                .body("[0].sku", equalTo("CH1"));
+                .body("products[0].name", equalTo("Hat"))
+                .body("products[0].sku", equalTo("GR1"))
+                .body("hasNext", equalTo(false));
     }
 
 }

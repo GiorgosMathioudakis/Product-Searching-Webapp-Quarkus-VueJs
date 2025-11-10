@@ -18,12 +18,15 @@ const headers = ref([
 const dialogVisible = ref(false);
 const dialogTitle = ref("");
 const isEditMode = ref(false);
-const searchName = ref("");
-const searchSku = ref("");
-const sortBy = ref("created_on");
-const sortDir = ref("DESC");
-const pageNo = ref(1);
-const pageSize = ref(10);
+
+const {
+  searchName,
+  searchSku,
+  pageNo,
+  pageSize,
+  sortBy,
+  sortDir
+} = storeToRefs(productStore);
 
 
 
@@ -247,17 +250,25 @@ function closeDialog() {
           icon="mdi-delete"
           size="small"
           variant="text"
-          @click="productStore.removeProduct(item.id)"
+          @click="productStore.removeProduct(item.id , 
+          {
+          name: searchName.value,
+          sku: searchSku.value,
+          pageNo: pageNo.value,
+          pageSize: pageSize.value,
+          sortBy: sortBy.value,
+          sortDir: sortDir.value
+        })"
         />
       </template>
       <template v-slot:bottom>
         <v-card-text>
           <v-row align="center" justify="center">
             
-            <v-col cols="4" md="2">
+            <v-col cols="12" md="2">
               <v-select
                 v-model="pageSize"
-                :items="[5, 10, 15, 20,97]"
+                :items="[10, 15, 20,97]"
                 label="Items per page"
                 density="compact"
                 hide-details
@@ -265,7 +276,7 @@ function closeDialog() {
               ></v-select>
             </v-col>
 
-            <v-col cols="8" md="2">
+            <v-col cols="12" md="2">
               <v-pagination
                 v-model="pageNo"
                 :length="productStore.hasNext ? pageNo + 1 : pageNo" 

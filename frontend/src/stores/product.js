@@ -13,9 +13,25 @@ export const useProductStore = defineStore("product", () => {
   const items = ref();
   const hasPrev = ref(true);
 
-  async function fetchProducts(params) {
+  const searchName = ref("");
+  const searchSku = ref("");
+  const pageNo = ref(1);
+  const pageSize = ref(10);
+  const sortBy = ref("created_on");
+  const sortDir = ref("DESC");
+
+  async function fetchProducts() {
     loading.value = true;
     try {
+
+      const params = {
+        name: searchName.value,
+        sku: searchSku.value,
+        pageNo: pageNo.value,
+        pageSize: pageSize.value,
+        sortBy: sortBy.value,
+        sortDir: sortDir.value,
+      };
 
       loading.value = true;
 
@@ -34,32 +50,33 @@ export const useProductStore = defineStore("product", () => {
     
   }
 
-  async function createNewProduct(productData) {
+  async function createNewProduct(productData,params) {
     try {
       await axios.post("/products", productData);
 
-      await fetchProducts();
+      await fetchProducts(params);
     } catch (error) {
       console.error("Error during create request:", error);
     }
   }
 
-  async function updateProduct(productData) {
+  async function updateProduct(productData,params) {
     try {
       console.log("product " + productData + " with id " + productData.id);
       await axios.put(`http://localhost:8080/products/${productData.id}`,productData);
 
-      await fetchProducts();
+      await fetchProducts(params);
     } catch (error) {
       console.error("Error during update request: ", error);
     }
   }
 
-  async function removeProduct(productId) {
+  async function removeProduct(productId,params) {
     try {
-      await axios.delete("/products/" + productId);
+      await axios.delete(`http://localhost:8080/products/${productId}`);
 
-      await fetchProducts();
+      await fetchProducts(params);
+        
     } catch (error) {
       console.error("Error during remove request: ", error);
     }
@@ -71,6 +88,12 @@ export const useProductStore = defineStore("product", () => {
     hasNext,
     hasPrev,
     loading,
+    searchName,
+    searchSku,
+    pageNo,
+    pageSize,
+    sortBy,
+    sortDir,
     fetchProducts,
     createNewProduct,
     updateProduct,

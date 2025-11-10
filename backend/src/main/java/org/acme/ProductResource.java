@@ -10,8 +10,6 @@ import org.acme.DTO.ProductPage;
 import org.acme.Model.Product;
 import org.acme.Service.ProductService;
 
-import java.util.List;
-
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 
 @Path("/products")
@@ -24,7 +22,7 @@ public class ProductResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getProductsByNameAndSku(
+    public Response getProductsPage(
             @QueryParam("pageNo") int pageNo,
             @QueryParam("pageSize") int pageSize,
             @QueryParam("name") String name,

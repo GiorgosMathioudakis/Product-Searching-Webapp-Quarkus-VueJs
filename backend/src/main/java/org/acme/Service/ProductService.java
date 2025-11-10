@@ -19,25 +19,6 @@ public class ProductService {
     StatelessSession statelessSession;
 
     @Transactional
-    public List<Product> findAllProductsByNameAndSku(String name,String sku){
-
-        String n = (name == null || name.isBlank()) ? null : name.trim();
-
-        String s = (sku  == null || sku.isBlank())  ? null : sku.trim();
-
-        if(n == null && s == null) return findAllProducts();
-
-        return statelessSession.createNativeQuery("select * from product " +
-                "WHERE " +
-                "( UPPER(name) LIKE UPPER('%' || :n || '%') AND sku LIKE UPPER('%' || :s || '%') )" , Product.class)
-                .setParameter("n", n == null ? "" : n)
-                .setParameter("s", s == null ? "" : s)
-                .getResultList();
-
-    }
-
-
-    @Transactional
     public boolean updateProduct(Long id, Product updatedProduct){
 
         Product existingProduct = statelessSession.get(Product.class, id);
@@ -85,27 +66,7 @@ public class ProductService {
 
     }
 
-    @Transactional
-    public List<Product> findAllProducts() {
-        Log.info("Finding all products");
-        return statelessSession.createNativeQuery("select * from product" , Product.class).getResultList();
-    }
-
-    @Transactional
-    public List<Product> getPage(int pageNo, int limit) {
-
-        int offset = (pageNo-1)*limit;
-
-        return statelessSession.createNativeQuery("select * from Product LIMIT :limit OFFSET :offest " , Product.class)
-                .setParameter("offest", offset)
-                .setParameter("limit", limit)
-                .getResultList();
-
-    }
-
     public ProductPage fetchProducts(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
-
-//        System.out.println("pageNo: " + pageNo +"pageSize: " + pageSize + "name: "+ name+ "sku: " + sku+ "sortby: " + sortBy+ "sortdir: " +sortDir);
 
         int offset = (pageNo-1)*pageSize;
 
