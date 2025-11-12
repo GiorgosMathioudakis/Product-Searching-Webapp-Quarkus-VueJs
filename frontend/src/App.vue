@@ -144,11 +144,14 @@ function closeDialog() {
   productDialog.value.show = false;
 }
 
-function handleSave(){
-  if (productDialog.value.edit) {
-    productStore.updateProduct(productDialog.value);
+function handleSave(productToSave){
+
+  if (productToSave.edit) {
+    console.log("update");
+    productStore.updateProduct(productToSave);
   } else {
-    productStore.createNewProduct(productDialog.value);
+    console.log("create");
+    productStore.createNewProduct(productToSave);
   }
 }
 
