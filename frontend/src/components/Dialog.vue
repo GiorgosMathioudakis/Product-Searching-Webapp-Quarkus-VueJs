@@ -1,35 +1,24 @@
 <script setup>
-import { useProductStore } from "@/stores/product.js";
 import { ref } from "vue";
 
-const productStore = useProductStore();
-
 const props = defineProps({
-  isEditMode: Boolean,
   dialogTitle: String,
   product: {
     type: Object,
     required: true,
   },
-  isVisible: Boolean,
 });
 
 const localproduct = ref({ ...props.product });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close" , "save"]);
 
 function handleCloseDialog() {
   emit("close");
 }
 
 function handleSave() {
-  if (props.isEditMode) {
-    console.log("edit", localproduct.value);
-    productStore.updateProduct(localproduct.value);
-  } else {
-    console.log("create", localproduct.value);
-    productStore.createNewProduct(localproduct.value);
-  }
+  emit("save", localproduct.value);
 
   emit("close");
 }
@@ -37,7 +26,7 @@ function handleSave() {
 </script>
 
 <template>
-  <v-dialog v-if="isVisible" max-width="600px" persistent>
+  <v-dialog max-width="600px" persistent>
     <v-card>
       <v-card-title class="pa-4 bg-primary">
         <span class="text-h5">{{ props.dialogTitle }}</span>

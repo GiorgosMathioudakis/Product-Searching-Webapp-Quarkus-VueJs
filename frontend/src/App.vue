@@ -15,9 +15,6 @@ const headers = ref([
   { title: "Actions", key: "actions", sortable: false, align: "end", width: "120px" },
 ]);
 
-const dialogVisible = ref(false);
-const dialogTitle = ref("");
-const isEditMode = ref(false);
 
 const {
   searchName,
@@ -27,9 +24,6 @@ const {
   sortBy,
   sortDir
 } = storeToRefs(productStore);
-
-
-
 
 const sortableColumns = ref([
   { title: "Date Created", value: "created_on" },
@@ -42,7 +36,9 @@ const sortDirections = ref([
 ]);
 
 
-const product = ref({
+const productDialog = ref({
+  show:false,
+  edit:false,
   id: null,
   name: "",
   sku: "",
@@ -61,7 +57,7 @@ watch(
       pageNo.value = 1;
 
     }else{
-    
+
       clearTimeout(debounceTimer);
 
       debounceTimer = setTimeout(() => {
@@ -79,7 +75,7 @@ watch(
   },
   {
     deep: true,
-  } 
+  }
 );
 
 
@@ -121,10 +117,9 @@ function formatDateTime(isoString) {
 }
 
 function openCreateDialog() {
-  isEditMode.value = false;
-  dialogTitle.value = "New Product";
+  productDialog.value.edit = false;
 
-  product.value = {
+  productDialog.value = {
     id: null,
     name: "",
     sku: "",
@@ -132,21 +127,29 @@ function openCreateDialog() {
     price: 0,
   };
 
-  dialogVisible.value = true;
+  productDialog.value.show = true;
 }
 
 function openEditDialog(product) {
-  isEditMode.value = true;
-  dialogTitle.value = "Edit product";
-  
-  product.value = { ...product };
 
-  dialogVisible.value = true;
+  productDialog.value.edit = true;
+
+  productDialog.value = product;
+
+  productDialog.value.show = true;
 
 }
 
 function closeDialog() {
-  dialogVisible.value = false;
+  productDialog.value.show = false;
+}
+
+function handleSave(){
+  if (productDialog.value.edit) {
+    productStore.updateProduct(productDialog.value);
+  } else {
+    productStore.createNewProduct(productDialog.value);
+  }
 }
 
 </script>
@@ -260,7 +263,7 @@ function closeDialog() {
             <v-col cols="auto">
               <v-select
                 v-model="pageSize"
-                :items="[10, 15, 20,97]"
+                :items="[10, 15, 20]"
                 label="Items per page"
                 density="compact"
                 hide-details
@@ -271,7 +274,7 @@ function closeDialog() {
             <v-col cols="auto">
               <v-pagination
                 v-model="pageNo"
-                :length="productStore.hasNext ? pageNo + 1 : pageNo" 
+                :length="productStore.hasNext ? pageNo + 1 : pageNo"
                 :total-visible="5"
                 density="compact"
                 class="float-right"
@@ -285,13 +288,14 @@ function closeDialog() {
   </v-card>
 
   <Dialog
-    v-model="dialogVisible"
-    :isEditMode="isEditMode"
-    :dialogTitle="dialogTitle"
-    :product="product"
-    :isVisible="dialogVisible"
+    v-if="productDialog.show"
+    v-model="productDialog.show"
+    :dialogTitle=" productDialog.edit ? 'Edit Product' : 'New Product' "
+    :product="productDialog"
     @close="closeDialog"
+    @save="handleSave"
   ></Dialog>
+
 </template>
 
 
