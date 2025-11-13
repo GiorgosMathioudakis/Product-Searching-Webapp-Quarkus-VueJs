@@ -224,6 +224,7 @@ function handleSave(productToSave){
       class="elevation-1"
       :headers="headers"
       item-value="id"
+      :items-length=pageSize
       :items="productStore.items"
       :loading="productStore.loading"
       loading-text="Loading products..."

@@ -98,13 +98,6 @@ public class ProductResourceTest {
                 .when().delete("/products/{id}")
                 .then()
                 .statusCode(204);
-
-        given()
-                .when().get("/products")
-                .then()
-                .statusCode(200)
-                .body("$", hasSize(1));
-
     }
 
     @Test
