@@ -117,7 +117,6 @@ function formatDateTime(isoString) {
 }
 
 function openCreateDialog() {
-  productDialog.value.edit = false;
 
   productDialog.value = {
     id: null,
@@ -125,19 +124,20 @@ function openCreateDialog() {
     sku: "",
     description: "",
     price: 0,
+    show: true,
+    edit: false
   };
 
-  productDialog.value.show = true;
 }
 
 function openEditDialog(product) {
 
-  productDialog.value.edit = true;
-
-  productDialog.value = product;
-
-  productDialog.value.show = true;
-
+  productDialog.value = {
+    ...productDialog.value,
+    ...product,
+    edit: true,
+    show: true
+  };
 }
 
 function closeDialog() {
@@ -147,11 +147,13 @@ function closeDialog() {
 function handleSave(productToSave){
 
   if (productToSave.edit) {
-    console.log("update");
+
     productStore.updateProduct(productToSave);
+
   } else {
-    console.log("create");
+
     productStore.createNewProduct(productToSave);
+
   }
 }
 

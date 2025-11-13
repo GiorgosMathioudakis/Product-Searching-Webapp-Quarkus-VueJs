@@ -25,6 +25,8 @@ public class ProductService {
 
         if(existingProduct == null) return false;
 
+//        if( getProductBySku(updatedProduct.sku) != existingProduct ) return false;
+
         existingProduct.name = updatedProduct.name;
         existingProduct.sku = updatedProduct.sku;
         existingProduct.price = updatedProduct.price;
@@ -33,6 +35,15 @@ public class ProductService {
         statelessSession.update(existingProduct);
 
         return true;
+    }
+
+    private Product getProductBySku(String sku) {
+        String query = "SELECT * FROM product where sku = :sku";
+
+        return statelessSession.createNativeQuery(query ,
+                Product.class).
+                setParameter("sku", sku).
+                getSingleResult();
     }
 
     @Transactional

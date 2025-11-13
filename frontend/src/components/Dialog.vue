@@ -18,6 +18,7 @@ function handleCloseDialog() {
 }
 
 function handleSave() {
+
   emit("save", localproduct.value);
 
   emit("close");
