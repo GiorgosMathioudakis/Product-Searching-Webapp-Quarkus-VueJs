@@ -52,6 +52,7 @@ function handleSave() {
               v-model="localproduct.description"
               density="compact"
               label="Description"
+              maxlength="255w"
               variant="outlined"
             />
             <v-text-field

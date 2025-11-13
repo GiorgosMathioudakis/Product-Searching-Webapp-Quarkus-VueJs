@@ -9,7 +9,7 @@ const headers = ref([
   { title: "Name", key: "name", minWidth: "100px", sortable: false },
   { title: "Price", key: "price", sortable: false },
   { title: "SKU", key: "sku", sortable: false },
-  { title: "Description", key: "description", minWidth: "150px", sortable: false },
+  { title: "Description", key: "description", width: "250px", sortable: false },
   { title: "Created On", key: "createdOn", sortable: false },
   { title: "Updated On", key: "updatedOn", sortable: false },
   { title: "Actions", key: "actions", sortable: false, align: "end", width: "120px" },
