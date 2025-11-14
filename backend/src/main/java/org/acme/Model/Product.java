@@ -39,11 +39,11 @@ public class Product{
     public String description;
 
     @CreationTimestamp
-    @Column(nullable = false,name = "created_on" , columnDefinition = "TIMESTAMPTZ")
+    @Column(nullable = false,name = "created_on")
     public OffsetDateTime createdOn;
 
     @UpdateTimestamp
-    @Column(nullable = false,name = "updated_on" , columnDefinition = "TIMESTAMPTZ")
+    @Column(nullable = false,name = "updated_on")
     public OffsetDateTime updatedOn;
 
 }
