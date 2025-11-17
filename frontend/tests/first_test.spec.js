@@ -72,3 +72,18 @@ test( 'update product ', async({ page }) => {
   await expect(page.getByRole('cell', { name: 'Old T-Shirt', exact: true }).first()).toBeVisible();
 
 });
+
+test( 'Delete product ', async({ page }) => {
+
+  await page.goto('http://localhost:3000');
+
+  await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
+
+  await page.getByRole('row', { name: 'Old T-Shirt $15.00 GR-2' }).getByLabel('Delete product').click();
+
+  await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
+
+  await expect(page.getByRole('cell', { name: 'Old T-Shirt', exact: true }).first()).toBeHidden();
+
+});
+
