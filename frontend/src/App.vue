@@ -166,6 +166,7 @@ function handleSave(productToSave){
       <v-toolbar-title>Products</v-toolbar-title>
       <v-spacer />
       <v-btn
+        id="new-product-button"
         color="primary"
         prepend-icon="mdi-plus"
         variant="flat"

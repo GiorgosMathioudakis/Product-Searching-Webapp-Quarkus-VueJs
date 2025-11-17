@@ -27,3 +27,26 @@ test( 'search product by sku', async ({ page }) => {
   await expect(page.getByRole('cell', { name: 'SH-00005', exact: true })).toBeHidden();
 
 });
+
+
+test( 'create product ', async({ page }) => {
+
+  await page.goto('http://localhost:3000');
+
+  await page.getByRole('button', { name: 'New Product' }).click();
+
+  await page.getByRole('textbox', { name: 'Name Name' }).fill('T-Shirt');
+
+  await page.getByRole('textbox', { name: 'SKU SKU' }).fill('GR-1');
+
+  await page.getByRole('textbox', { name: 'Description Description' }).fill('Carhartt T-Shirt');
+
+  await page.getByRole('spinbutton', { name: 'Price Price' }).fill('20');
+
+  await page.getByRole('button', { name: 'Save' }).click();
+
+  await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
+
+  await expect(page.getByRole('cell', { name: 'T-Shirt', exact: true }).first()).toBeVisible();
+
+});
