@@ -179,6 +179,7 @@ function handleSave(productToSave){
         <v-col cols="12" md="2">
           <v-text-field
             v-model="searchName"
+            id="search-name"
             label="Search by Name"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
@@ -190,6 +191,7 @@ function handleSave(productToSave){
         <v-col cols="12" md="2">
           <v-text-field
             v-model="searchSku"
+            id="search-sku"
             label="Search by SKU"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
@@ -200,6 +202,7 @@ function handleSave(productToSave){
         </v-col>
         <v-col cols="12" md="2">
           <v-select
+            id="sort-by"
           v-model="sortBy"
           :items="sortableColumns"
           label="Sort By"
@@ -210,6 +213,7 @@ function handleSave(productToSave){
         </v-col>
         <v-col cols="12" md="2">
           <v-select
+            id="sort-dir"
             v-model="sortDir"
             :items="sortDirections"
             label="Direction"
@@ -221,6 +225,7 @@ function handleSave(productToSave){
       </v-row>
     </v-card-text>
     <v-data-table-server
+      id="data-table"
       class="elevation-1"
       :headers="headers"
       item-value="id"
