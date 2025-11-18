@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33f1f141-1636-46f8-b979-6611eb2179f4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Product-Searching-Webapp-Quarkus-VueJs.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tests/example.spec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/db/migration/B1_0_00__Baseline.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/B1_0_00__Baseline.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/tests/first_test.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tests/first_test.spec.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +29,10 @@
     "url": "https://github.com/GiorgosMathioudakis/Product-Searching-Webapp-Quarkus-VueJs.git",
     "accountId": "b2c61102-9ba3-4b6c-9e91-0d7189609e64"
   }
+}]]></component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
 }]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
@@ -63,6 +63,11 @@
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="RunManager">
@@ -129,7 +134,7 @@
       <workItem from="1760092830931" duration="1040000" />
       <workItem from="1762329491552" duration="1653000" />
       <workItem from="1762334434610" duration="910000" />
-      <workItem from="1763455481376" duration="2539000" />
+      <workItem from="1763455481376" duration="8442000" />
     </task>
     <servers />
   </component>

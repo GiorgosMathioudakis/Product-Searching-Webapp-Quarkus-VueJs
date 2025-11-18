@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 
 test('search product by name', async ({ page }) => {
 
-  await page.goto('http://localhost:3000/');
+  await page.goto('http://localhost:3000');
 
   await page.getByRole('textbox', { name: 'Search by Name Search by Name' }).fill('Cargo Shorts');
 
@@ -16,7 +16,7 @@ test('search product by name', async ({ page }) => {
 
 test( 'search product by sku', async ({ page }) => {
 
-  await page.goto('http://localhost:3000/');
+  await page.goto('http://localhost:3000');
 
   await page.getByRole('textbox', { name: 'Search by SKU Search by SKU' }).fill('LJ-00004');
 
