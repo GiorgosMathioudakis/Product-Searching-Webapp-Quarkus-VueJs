@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33f1f141-1636-46f8-b979-6611eb2179f4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/db/migration/B1_0_00__Baseline.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/B1_0_00__Baseline.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tests/first_test.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tests/first_test.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/playwright.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/playwright.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +131,7 @@
       <workItem from="1760092830931" duration="1040000" />
       <workItem from="1762329491552" duration="1653000" />
       <workItem from="1762334434610" duration="910000" />
-      <workItem from="1763455481376" duration="8442000" />
+      <workItem from="1763455481376" duration="9074000" />
     </task>
     <servers />
   </component>
