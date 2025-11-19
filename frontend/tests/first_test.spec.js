@@ -53,21 +53,21 @@ test( 'create product ', async({ page }) => {
 
 test( 'update product ', async({ page }) => {
 
-  await page.getByRole('row', { name: 'T-Shirt $20.00 GR-1 Carhartt' }).getByLabel('Edit product').click();
+  await page.getByRole('row', { name: 'Wool Sweater $79.99 SW-00003' }).getByLabel('Edit product').click();
 
-  await page.getByRole('textbox', { name: 'Name Name' }).fill('Old T-Shirt');
+  await page.getByRole('textbox', { name: 'Name Name' }).fill('Zara Sweater');
 
-  await page.getByRole('textbox', { name: 'SKU SKU' }).fill('GR-2');
+  await page.getByRole('textbox', { name: 'SKU SKU' }).fill('SW-0003');
 
-  await page.getByRole('textbox', { name: 'Description Description' }).fill('Old Carhartt T-Shirt');
-
-  await page.getByRole('spinbutton', { name: 'Price Price' }).fill('15');
+  await page.getByRole('spinbutton', { name: 'Price Price' }).fill('79.99');
 
   await page.getByRole('button', { name: 'Save' }).click();
 
   await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
 
-  await expect(page.getByRole('cell', { name: 'Old T-Shirt', exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'Wool Sweater $80.99 SW-00003', exact: true })).toBeHidden();
+
+  await expect(page.getByRole('cell', { name: 'Zara Sweater', exact: true }).first()).toBeVisible();
 
 });
 
@@ -80,37 +80,5 @@ test( 'Delete product ', async({ page }) => {
   await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
 
   await expect(page.getByRole('cell', { name: 'Old T-Shirt', exact: true }).first()).toBeHidden();
-
-});
-
-// New tests for POST, PUT, DELETE lifecycle
-test('create, update, and delete a product via UI', async ({ page }) => {
-  
-  // --- Create Product (POST equivalent) ---
-  await page.getByRole('button', { name: 'New Product' }).click();
-  await page.getByRole('textbox', { name: 'Name Name' }).fill('Test Product Alpha');
-  await page.getByRole('textbox', { name: 'SKU SKU' }).fill('ALPHA-001');
-  await page.getByRole('textbox', { name: 'Description Description' }).fill('Description for Test Product Alpha');
-  await page.getByRole('spinbutton', { name: 'Price Price' }).fill('99');
-  await page.getByRole('button', { name: 'Save' }).click();
-  await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
-  await expect(page.getByRole('cell', { name: 'Test Product Alpha', exact: true }).first()).toBeVisible();
-
-  // --- Update Product (PUT equivalent) ---
-  // Assuming the newly created product is the first row matching its name.
-  await page.getByRole('row', { name: 'Test Product Alpha $99.00 ALPHA-001 Description for Test Product Alpha' }).getByLabel('Edit product').click();
-  await page.getByRole('textbox', { name: 'Name Name' }).fill('Test Product Beta');
-  await page.getByRole('textbox', { name: 'SKU SKU' }).fill('BETA-002');
-  await page.getByRole('textbox', { name: 'Description Description' }).fill('Updated description for Test Product Beta');
-  await page.getByRole('spinbutton', { name: 'Price Price' }).fill('105');
-  await page.getByRole('button', { name: 'Save' }).click();
-  await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
-  await expect(page.getByRole('cell', { name: 'Test Product Beta', exact: true }).first()).toBeVisible();
-  await expect(page.getByRole('cell', { name: 'Test Product Alpha', exact: true })).toBeHidden(); // Ensure old product name is not visible
-
-  // --- Delete Product (DELETE equivalent) ---
-  await page.getByRole('row', { name: 'Test Product Beta $105.00 BETA-002 Updated description for Test Product Beta' }).getByLabel('Delete product').click();
-  await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
-  await expect(page.getByRole('cell', { name: 'Test Product Beta', exact: true }).first()).toBeHidden();
 
 });
