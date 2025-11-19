@@ -44,13 +44,6 @@ test.afterEach(async ({ page }) => {
 
 });
 
-test('create product', async ({ page }) => {
-
-  await expect(page.getByRole('cell', { name: PRODUCT_NAME, exact: true }).first()).toBeVisible();
-  await expect(page.getByRole('cell', { name: PRODUCT_SKU, exact: true }).first()).toBeVisible();
-
-});
-
 test('search product by name', async ({ page }) => {
 
   await page.getByRole('textbox', { name: 'Search by Name Search by Name' }).fill(PRODUCT_NAME);
@@ -71,6 +64,13 @@ test('search product by sku', async ({ page }) => {
 
   await expect(page.getByRole('cell', { name: PRODUCT_SKU, exact: true }).first()).toBeVisible();
   await expect(page.getByRole('cell', { name: PRODUCT_NAME, exact: true }).first()).toBeVisible();
+
+});
+
+test('create product', async ({ page }) => {
+
+  await expect(page.getByRole('cell', { name: PRODUCT_NAME, exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('cell', { name: PRODUCT_SKU, exact: true }).first()).toBeVisible();
 
 });
 
