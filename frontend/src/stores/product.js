@@ -17,7 +17,7 @@ export const useProductStore = defineStore("product", () => {
   const searchSku = ref("");
   const pageNo = ref(1);
   const pageSize = ref(10);
-  const sortBy = ref("created_on");
+  const sortBy = ref("updated_on");
   const sortDir = ref("DESC");
 
   async function fetchProducts() {
