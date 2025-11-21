@@ -25,7 +25,7 @@ public class DataSeeder {
         try(StatelessSession session = sessionFactory.openStatelessSession()) {
             Transaction tx = session.beginTransaction();
 
-            for (int i = 0; i < 10_000_000; i++) {
+            for (int i = 4378998; i < 10_000_000; i++) {
                 Product p = new Product();
                 p.name = "Product " + i;
                 p.description = "Description for product " + i;
