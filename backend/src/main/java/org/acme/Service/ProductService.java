@@ -9,6 +9,7 @@ import org.acme.Model.Product;
 import org.hibernate.StatelessSession;
 
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 public class ProductService {
@@ -77,6 +78,9 @@ public class ProductService {
 
     public ProductPage fetchProductPage(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
 
+        Set<String> allowedSorts = Set.of("updated_on", "created_on", "price", "name");
+        String safeSortBy = allowedSorts.contains(sortBy) ? sortBy : "updated_on";
+
         int offset = (pageNo-1)*pageSize;
 
         String n = (name == null || name.isBlank()) ? "" : name.trim();
@@ -87,9 +91,9 @@ public class ProductService {
                 "WHERE " +
                 "( name ILIKE ('%' || :n || '%') AND sku ILIKE ('%' || :s || '%') ) ";
         if (sortDir.equals("ASC")) {
-            query += "ORDER BY " + sortBy + " ASC LIMIT :limit OFFSET :offset";
+            query += "ORDER BY " + safeSortBy + " ASC LIMIT :limit OFFSET :offset";
         } else if (sortDir.equals("DESC")) {
-            query += "ORDER BY " + sortBy + " DESC LIMIT :limit OFFSET :offset";
+            query += "ORDER BY " + safeSortBy + " DESC LIMIT :limit OFFSET :offset";
         } else {
             throw new IllegalArgumentException();
         }
