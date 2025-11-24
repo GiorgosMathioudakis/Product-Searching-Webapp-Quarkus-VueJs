@@ -87,26 +87,50 @@ public class ProductService {
 
         String s = (sku  == null || sku.isBlank())  ? "" : sku.trim();
 
-        String query = "SELECT * FROM product " +
-                "WHERE " +
-                "( name ILIKE ('%' || :n || '%') AND sku ILIKE ('%' || :s || '%') ) ";
-        if (sortDir.equals("ASC")) {
-            query += "ORDER BY " + safeSortBy + " ASC LIMIT :limit OFFSET :offset";
-        } else if (sortDir.equals("DESC")) {
-            query += "ORDER BY " + safeSortBy + " DESC LIMIT :limit OFFSET :offset";
+        boolean isSearchMode = !n.isEmpty() || !s.isEmpty();
+
+        String sql;
+
+        if (isSearchMode) {
+
+            sql = "WITH matches AS MATERIALIZED ( " +
+                    "   SELECT id FROM product " +
+                    "   WHERE ( name ILIKE ('%' || :n || '%') AND sku ILIKE ('%' || :s || '%') ) " +
+                    ") " +
+                    "SELECT p.* FROM product p " +
+                    "JOIN matches m ON p.id = m.id ";
         } else {
-            throw new IllegalArgumentException();
+
+            sql = "SELECT p.* FROM product p " +
+                    "WHERE 1=1 ";
         }
 
-        List<Product> productList = statelessSession.createNativeQuery(
-                query   , Product.class)
-                .setParameter("n" , n)
-                .setParameter("s" , s)
-                .setParameter("limit", pageSize+1)
-                .setParameter("offset", offset)
-                .getResultList();
 
-        return ( new ProductPage(productList, pageSize) );
+        if (!List.of("price", "updated_on", "created_on", "name").contains(sortBy)) {
+            sortBy = "updated_on";
+        }
+
+        if ("ASC".equalsIgnoreCase(sortDir)) {
+            sql += "ORDER BY p." + sortBy + " ASC ";
+        } else {
+            sql += "ORDER BY p." + sortBy + " DESC ";
+        }
+
+        sql += "LIMIT :limit OFFSET :offset";
+
+        var query = statelessSession.createNativeQuery(sql, Product.class);
+
+        if (isSearchMode) {
+            query.setParameter("n", n);
+            query.setParameter("s", s);
+        }
+
+        return new ProductPage(
+                query.setParameter("limit", pageSize)
+                        .setParameter("offset", offset)
+                        .getResultList(),
+                pageSize
+        );
 
     }
 }
