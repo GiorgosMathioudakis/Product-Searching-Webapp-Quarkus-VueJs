@@ -3,7 +3,7 @@ package org.acme;
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.inject.Inject;
-import org.acme.Seeders.DataSeeder;
+import org.acme.Service.DataSeeder;
 
 @QuarkusMain(name = "db-seeder")
 public class DataSeederMain implements QuarkusApplication {
