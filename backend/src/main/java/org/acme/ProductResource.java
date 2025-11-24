@@ -1,6 +1,5 @@
 package org.acme;
 
-import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -31,7 +30,7 @@ public class ProductResource {
             @QueryParam("sortDir") String sortDir
     ){
 
-        ProductPage products = productService.fetchProducts(pageNo,pageSize,name,sku,sortBy,sortDir);
+        ProductPage products = productService.fetchProductPage(pageNo,pageSize,name,sku,sortBy,sortDir);
 
         return Response.ok(products).build();
     }

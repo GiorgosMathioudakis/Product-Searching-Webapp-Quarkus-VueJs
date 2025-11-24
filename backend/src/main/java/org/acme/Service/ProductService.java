@@ -1,10 +1,8 @@
 package org.acme.Service;
 
 
-import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.acme.DTO.ProductPage;
 import org.acme.Model.Product;
@@ -77,7 +75,7 @@ public class ProductService {
 
     }
 
-    public ProductPage fetchProducts(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
+    public ProductPage fetchProductPage(int pageNo, int pageSize, String name, String sku, String sortBy, String sortDir) {
 
         int offset = (pageNo-1)*pageSize;
 
@@ -87,7 +85,7 @@ public class ProductService {
 
         String query = "SELECT * FROM product " +
                 "WHERE " +
-                "( UPPER(name) LIKE UPPER('%' || :n || '%') AND UPPER(sku) LIKE UPPER('%' || :s || '%') ) ";
+                "( name ILIKE ('%' || :n || '%') AND sku ILIKE ('%' || :s || '%') ) ";
         if (sortDir.equals("ASC")) {
             query += "ORDER BY " + sortBy + " ASC LIMIT :limit OFFSET :offset";
         } else if (sortDir.equals("DESC")) {

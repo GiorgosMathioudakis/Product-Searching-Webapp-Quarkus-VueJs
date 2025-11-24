@@ -1,7 +1,6 @@
 package org.acme;
 
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.acme.DTO.ProductPage;
@@ -129,7 +128,7 @@ public class ProductServiceTest {
         Mockito.when(mockQuery.getResultList())
                 .thenReturn(products.subList(1,2));
 
-        ProductPage result = productService.fetchProducts(2, 1,"Shi" , "CH" , "price" , "DESC");
+        ProductPage result = productService.fetchProductPage(2, 1,"Shi" , "CH" , "price" , "DESC");
 
         assertNotNull(result);
         assertEquals(1, result.products.size());
