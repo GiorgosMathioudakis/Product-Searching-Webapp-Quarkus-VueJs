@@ -24,8 +24,6 @@ public class ProductService {
 
         if(existingProduct == null) return false;
 
-//        if( getProductBySku(updatedProduct.sku) != existingProduct ) return false;
-
         existingProduct.name = updatedProduct.name;
         existingProduct.sku = updatedProduct.sku;
         existingProduct.price = updatedProduct.price;
@@ -84,7 +82,6 @@ public class ProductService {
         int offset = (pageNo-1)*pageSize;
 
         String n = (name == null || name.isBlank()) ? "" : name.trim();
-
         String s = (sku  == null || sku.isBlank())  ? "" : sku.trim();
 
         boolean isSearchMode = !n.isEmpty() || !s.isEmpty();
@@ -105,15 +102,10 @@ public class ProductService {
                     "WHERE 1=1 ";
         }
 
-
-        if (!List.of("price", "updated_on", "created_on", "name").contains(sortBy)) {
-            sortBy = "updated_on";
-        }
-
         if ("ASC".equalsIgnoreCase(sortDir)) {
-            sql += "ORDER BY p." + sortBy + " ASC ";
+            sql += "ORDER BY p." + safeSortBy + " ASC ";
         } else {
-            sql += "ORDER BY p." + sortBy + " DESC ";
+            sql += "ORDER BY p." + safeSortBy + " DESC ";
         }
 
         sql += "LIMIT :limit OFFSET :offset";
