@@ -118,7 +118,7 @@ public class ProductService {
         }
 
         return new ProductPage(
-                query.setParameter("limit", pageSize)
+                query.setParameter("limit", pageSize + 1)
                         .setParameter("offset", offset)
                         .getResultList(),
                 pageSize
