@@ -46,59 +46,63 @@ const productDialog = ref({
   price: 0,
 });
 
+const getSafeValue = (text) => {
+  return (text && text.length >= 3) ? text : "";
+};
+
 let debounceTimer;
 
 watch(
-  [searchName, searchSku, pageSize , sortBy, sortDir],
-  () => {
+  [searchName, searchSku, pageSize , sortBy, sortDir, pageNo],
+  (newValues, oldValues) => {
 
-    if(pageNo.value !== 1){
+    const [newName, newSku, newSize, newSort, newDir, newPage] = newValues;
+    const [oldName, oldSku, oldSize, oldSort, oldDir, oldPage] = oldValues;
 
+    const nameChanged = newName !== oldName;
+    const skuChanged = newSku !== oldSku;
+    const otherChanged = newSize !== oldSize || newSort !== oldSort || newDir !== oldDir || newPage !== oldPage;
+
+    const nameInvalid = newName && newName.length > 0 && newName.length < 3;
+    const skuInvalid = newSku && newSku.length > 0 && newSku.length < 3;
+
+    if (nameChanged && nameInvalid) return;
+    if (skuChanged && skuInvalid) return;
+
+    if ((nameChanged || skuChanged || newSize !== oldSize || newSort !== oldSort || newDir !== oldDir) && newPage !== 1) {
       pageNo.value = 1;
-
-    }else{
-
-      clearTimeout(debounceTimer);
-
-      debounceTimer = setTimeout(() => {
-          productStore.fetchProducts({
-            name: searchName.value,
-            sku: searchSku.value,
-            pageNo: pageNo.value,
-            pageSize: pageSize.value,
-            sortBy: sortBy.value,
-            sortDir: sortDir.value
-          });
-      }, 400);
-
+      return;
     }
+
+    clearTimeout(debounceTimer);
+
+    debounceTimer = setTimeout(() => {
+        productStore.fetchProducts({
+          name: getSafeValue(newName),
+          sku: getSafeValue(newSku),
+          pageNo: newPage,
+          pageSize: newSize,
+          sortBy: newSort,
+          sortDir: newDir
+        });
+    }, 400);
+
   },
   {
     deep: true,
   }
 );
 
-
-watch(
-  [pageNo],
-  () => {
-    clearTimeout(debounceTimer);
-
-    debounceTimer = setTimeout(() => {
-        productStore.fetchProducts({
-          name: searchName.value,
-          sku: searchSku.value,
-          pageNo: pageNo.value,
-          pageSize: pageSize.value,
-          sortBy: sortBy.value,
-          sortDir: sortDir.value
-        });
-    }, 400);
-  },
-  {
-    immediate: true,
-  }
-)
+onMounted(() => {
+  productStore.fetchProducts({
+    name: getSafeValue(searchName.value),
+    sku: getSafeValue(searchSku.value),
+    pageNo: pageNo.value,
+    pageSize: pageSize.value,
+    sortBy: sortBy.value,
+    sortDir: sortDir.value
+  });
+});
 
 function formatDateTime(isoString) {
   if (!isoString) return "N/A";
@@ -180,25 +184,28 @@ function handleSave(productToSave){
         <v-col cols="12" md="2">
           <v-text-field
             v-model="searchName"
-            id="search-name"
             label="Search by Name"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             density="compact"
-            hide-details
             clearable
+            hide-details="auto"
+            :hint="searchName && searchName.length > 0 && searchName.length < 3 ? 'Enter 3+ chars' : ''"
+            persistent-hint
           ></v-text-field>
         </v-col>
+
         <v-col cols="12" md="2">
           <v-text-field
             v-model="searchSku"
-            id="search-sku"
             label="Search by SKU"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             density="compact"
-            hide-details
             clearable
+            hide-details="auto"
+            :hint="searchSku && searchSku.length > 0 && searchSku.length < 3 ? 'Enter 3+ chars' : ''"
+            persistent-hint
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
