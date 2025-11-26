@@ -1,1 +1,0 @@
-DROP INDEX idx_experiment_composite;
