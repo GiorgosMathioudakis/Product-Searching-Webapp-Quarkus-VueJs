@@ -1,24 +1,30 @@
-// oxlint-disable no-unused-vars
 import { defineStore } from "pinia";
-
 import axios from "axios";
-
 import { ref } from "vue";
-import { VListItemSubtitle } from "vuetify/components";
 
 export const useProductStore = defineStore("product", () => {
-  const product = ref([]);
+  // State
+  const product = ref([]); // Kept for backward compatibility if used elsewhere
+  const items = ref([]);   // Main list used in your view
   const loading = ref(true);
   const hasNext = ref(false);
-  const items = ref();
   const hasPrev = ref(true);
 
+  // Cache Container
+  const pageCache = ref(new Map());
+
+  // Search/Filter State
   const searchName = ref("");
   const searchSku = ref("");
   const pageNo = ref(1);
   const pageSize = ref(10);
   const sortBy = ref("updated_on");
   const sortDir = ref("DESC");
+
+  // Helper: Create a unique key string based on current filter values
+  const generateCacheKey = (params) => {
+    return JSON.stringify(params);
+  };
 
   async function fetchProducts() {
     loading.value = true;
@@ -33,54 +39,79 @@ export const useProductStore = defineStore("product", () => {
         sortDir: sortDir.value,
       };
 
-      loading.value = true;
+      // Generate Key
+      const key = generateCacheKey(params);
 
-      const response = await axios.get(`http://localhost:8080/products`, {params});
+      // CHECK CACHE
+      if (pageCache.value.has(key)) {
+        console.log("⚡ Cache Hit! Serving from Memory.");
+        const cachedData = pageCache.value.get(key);
 
+        // Restore state from cache
+        items.value = cachedData.items;
+        hasNext.value = cachedData.hasNext;
+        hasPrev.value = (params.pageNo > 1);
+
+        loading.value = false;
+        return; // STOP HERE, DO NOT CALL API
+      }
+
+      //API CALL (Cache Miss)
+      console.log("🌍 Cache Miss. Calling API...");
+      const response = await axios.get(`http://localhost:8080/products`, { params });
+
+      // UPDATE STATE
       items.value = response.data.products;
       hasNext.value = response.data.hasNext;
-      hasPrev.value = ( params.pageNo > 1);
+      hasPrev.value = (params.pageNo > 1);
+
+      // SAVE TO CACHE (The important missing part!)
+      pageCache.value.set(key, {
+        items: response.data.products,
+        hasNext: response.data.hasNext
+      });
 
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
       loading.value = false;
     }
-
-
   }
 
-  async function createNewProduct(productData,params) {
+  async function createNewProduct(productData) {
     try {
+      await axios.post("http://localhost:8080/products", productData);
 
-      await axios.post("/products", productData);
+      // INVALIDATE CACHE: Data changed, so old cache is invalid
+      pageCache.value.clear();
 
-      await fetchProducts(params);
-
+      await fetchProducts();
     } catch (error) {
       console.error("Error during create request:", error);
     }
   }
 
-  async function updateProduct(productData,params) {
+  async function updateProduct(productData) {
     try {
+      await axios.put(`http://localhost:8080/products/${productData.id}`, productData);
 
-      await axios.put(`http://localhost:8080/products/${productData.id}`,productData);
+      // INVALIDATE CACHE
+      pageCache.value.clear();
 
-      await fetchProducts(params);
-
+      await fetchProducts();
     } catch (error) {
       console.error("Error during update request: ", error);
     }
   }
 
-  async function removeProduct(productId,params) {
+  async function removeProduct(productId) {
     try {
-
       await axios.delete(`http://localhost:8080/products/${productId}`);
 
-      await fetchProducts(params);
+      // INVALIDATE CACHE
+      pageCache.value.clear();
 
+      await fetchProducts();
     } catch (error) {
       console.error("Error during remove request: ", error);
     }
