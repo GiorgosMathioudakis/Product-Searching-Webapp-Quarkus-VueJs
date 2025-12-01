@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import axios from "axios";
 import { ref } from "vue";
+import api from "@/plugins/axios";
 
 export const useProductStore = defineStore("product", () => {
   // State
@@ -58,7 +58,7 @@ export const useProductStore = defineStore("product", () => {
 
       //API CALL (Cache Miss)
       console.log("🌍 Cache Miss. Calling API...");
-      const response = await axios.get(`http://localhost:8080/products`, { params });
+      const response = await api.get(`/products`, { params });
 
       // UPDATE STATE
       items.value = response.data.products;
@@ -80,7 +80,7 @@ export const useProductStore = defineStore("product", () => {
 
   async function createNewProduct(productData) {
     try {
-      await axios.post("http://localhost:8080/products", productData);
+      await api.post("/products", productData);
 
       // INVALIDATE CACHE: Data changed, so old cache is invalid
       pageCache.value.clear();
@@ -93,7 +93,7 @@ export const useProductStore = defineStore("product", () => {
 
   async function updateProduct(productData) {
     try {
-      await axios.put(`http://localhost:8080/products/${productData.id}`, productData);
+      await api.put(`/products/${productData.id}`, productData);
 
       // INVALIDATE CACHE
       pageCache.value.clear();
@@ -106,7 +106,7 @@ export const useProductStore = defineStore("product", () => {
 
   async function removeProduct(productId) {
     try {
-      await axios.delete(`http://localhost:8080/products/${productId}`);
+      await api.delete(`/products/${productId}`);
 
       // INVALIDATE CACHE
       pageCache.value.clear();

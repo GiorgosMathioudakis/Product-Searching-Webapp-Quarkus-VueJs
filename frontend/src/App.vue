@@ -2,8 +2,11 @@
 import { onMounted, ref, watch } from "vue";
 import { useProductStore } from "@/stores/product.js";
 import Dialog from "@/components/Dialog.vue";
+import { useNotificationStore } from "@/stores/notification";
+import { storeToRefs } from "pinia";
 
 const productStore = useProductStore();
+const notify = useNotificationStore();
 
 const headers = ref([
   { title: "Name", key: "name", minWidth: "100px", sortable: false },
@@ -237,7 +240,7 @@ function handleSave(productToSave){
       class="elevation-1"
       :headers="headers"
       item-value="id"
-      :items-length=pageSize
+      :items-length="pageSize"
       :items="productStore.items"
       :loading="productStore.loading"
       loading-text="Loading products..."
@@ -314,6 +317,19 @@ function handleSave(productToSave){
     @close="closeDialog"
     @save="handleSave"
   ></Dialog>
+
+  <v-snackbar
+    v-model="notify.show"
+    :color="notify.color"
+    timeout="4000"
+    location="top right"
+  >
+    {{ notify.message }}
+
+    <template v-slot:actions>
+      <v-btn variant="text" @click="notify.show = false">Close</v-btn>
+    </template>
+  </v-snackbar>
 
 </template>
 
