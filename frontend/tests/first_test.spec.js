@@ -27,6 +27,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }) => {
+  await page.goto('http://localhost:3000');
+
+  await expect(page.getByText('Loading products...')).toBeHidden({ timeout: 10000 });
 
   const originalProductRow = page.getByRole('row', { name: new RegExp(`^${PRODUCT_NAME}`) });
 
