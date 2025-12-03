@@ -22,27 +22,51 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable>{
         // 1. Handle JAX-RS specific errors (404 Not Found, 403 Forbidden, etc.)
         // This allows standard framework errors to pass through with their original codes
         if (exception instanceof WebApplicationException webEx) {
+            logger.info("Logger reported WebApplicationException");
             Response original = webEx.getResponse();
             // You can decide to wrap this in your JSON format or return as is
             return buildResponse(original.getStatus(), exception.getMessage());
         }
 
-        // 2. Handle Validation Errors (e.g. @NotNull, @Size, Duplicate SKU)
+        // 2. Handle Validation Errors (e.g. @NotNull, @Size)
         if (exception instanceof ConstraintViolationException cve) {
+            logger.info("Logger reported ConstraintViolationException");
             return handleValidationException(cve);
+        }
+
+        if (exception instanceof org.hibernate.exception.ConstraintViolationException dbEx) {
+            return handleDbConstraint(dbEx);
         }
 
         // 3. Handle Manual Bad Requests (e.g. "Name too short")
         if (exception instanceof IllegalArgumentException) {
+            logger.info("Logger reported IllegalArgumentException");
             return buildResponse(400, exception.getMessage());
         }
 
         // 4. Handle Everything Else (500)
-        logger.error("Unknown error occurred", exception); // Log full stack trace for you
+        logger.error("Logger reported Unknown error occurred", exception); // Log full stack trace for you
         return buildResponse(500, "Internal Server Error. Please contact support.");
     }
 
+    private Response handleDbConstraint(org.hibernate.exception.ConstraintViolationException e) {
+
+        String msg = "Database error occurred.";
+        int status = 409; // Conflict
+
+        // Check if the error is about the SKU
+        String constraintName = e.getConstraintName();
+        if (constraintName != null && constraintName.toLowerCase().contains("sku")) {
+            msg = "A product with this SKU already exists.";
+        }
+
+        logger.info("Logger reported database error with msg: " + msg);
+
+        return buildResponse(status, msg);
+    }
+
     private Response handleValidationException(ConstraintViolationException cve) {
+        System.out.println("Inside ConstraintViolationException: " + cve.getMessage());
         // If it's a Duplicate SKU error (from Database), the message usually contains the constraint name
         // However, standard Bean Validation (@NotNull) comes here too.
 
