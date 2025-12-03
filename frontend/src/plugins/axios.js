@@ -25,11 +25,11 @@ api.interceptors.response.use(
       // Server returned a response (4xx, 5xx)
       const status = error.response.status;
       if (status === 400) {
-        message = error.response.data.error || "Invalid Request";
+        message = error.response.error || "Invalid Request";
       } else if (status === 404) {
         message = "Resource not found.";
       } else if (status === 409) {
-        message = "Conflict: Item already exists.";
+        message = error.response.error || "Conflict: Item already exists.";
       } else if (status === 500) {
         message = "Server error. Please try again later.";
       }
