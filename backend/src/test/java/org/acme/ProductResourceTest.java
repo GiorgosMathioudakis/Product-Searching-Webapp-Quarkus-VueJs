@@ -27,29 +27,37 @@ public class ProductResourceTest {
     @Inject
     DataSource dataSource;
 
-    @BeforeEach // <--- 2. Run this before EVERY test to ensure clean data
-    void setup() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-
-            try (Statement stmt = connection.createStatement()) {
-
-                stmt.execute("TRUNCATE TABLE product RESTART IDENTITY CASCADE");
-
-                stmt.execute("INSERT INTO product (name, sku, price, description, created_on, updated_on) " +
-                        "VALUES ('Hat', 'GR1', 1.00, 'description', '2025-11-05 09:24:50.641386+00', '2025-11-05 09:24:50.641386+00')");
-
-
-                stmt.execute("INSERT INTO product (name, sku, price, description, created_on, updated_on) " +
-                        "VALUES ('Shirt', 'CH1', 2.00, 'description', '2025-10-29 13:32:46.480509+00', '2025-10-29 13:32:46.480509+00')");
-            }
+    private void clearDatabase() throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement()) {
+            // TRUNCATE: Wipes data fast
+            // RESTART IDENTITY: Resets ID counter back to 1 (Important for your ID tests)
+            // CASCADE: Removes data from other tables that link to this one
+            stmt.execute("TRUNCATE TABLE product RESTART IDENTITY CASCADE");
         }
     }
 
+    @BeforeEach
+    void setup() throws SQLException {
+        // 1. Clean the DB first (To be absolutely sure)
+        clearDatabase();
+
+        // 2. Insert Test Data
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            stmt.execute("INSERT INTO product (name, sku, price, description, created_on, updated_on) " +
+                    "VALUES ('Hat', 'GR1', 1.00, 'description', '2025-11-05 09:24:50.641386+00', '2025-11-05 09:24:50.641386+00')");
+
+            stmt.execute("INSERT INTO product (name, sku, price, description, created_on, updated_on) " +
+                    "VALUES ('Shirt', 'CH1', 2.00, 'description', '2025-10-29 13:32:46.480509+00', '2025-10-29 13:32:46.480509+00')");
+        }
+    }
 
     @AfterEach
-    void cleanup() {
-        // TODO: clean up test products (jdbc)
-
+    void cleanup() throws SQLException {
+        // 3. Clean up after the test finishes
+        clearDatabase();
     }
 
     @Test
