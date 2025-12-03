@@ -7,8 +7,8 @@ import jakarta.transaction.Transactional;
 import org.acme.DTO.ProductPage;
 import org.acme.Model.Product;
 import org.hibernate.StatelessSession;
+import org.hibernate.exception.ConstraintViolationException;
 
-import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
@@ -34,14 +34,6 @@ public class ProductService {
         return true;
     }
 
-    private Product getProductBySku(String sku) {
-        String query = "SELECT * FROM product where sku = :sku";
-
-        return statelessSession.createNativeQuery(query ,
-                Product.class).
-                setParameter("sku", sku).
-                getSingleResult();
-    }
 
     @Transactional
     public boolean createProduct(Product product){
@@ -58,6 +50,25 @@ public class ProductService {
         Product persistedProduct = statelessSession.get(Product.class, new_p.id);
 
         return persistedProduct != null;
+
+    }
+
+    public boolean isSkuTaken(String sku, Long idToIgnore){
+        String sql = "SELECT * FROM product where sku = :sku ";
+
+        //update
+        if(idToIgnore != null){
+            sql += " AND id != :idToIgnore ";
+        }
+
+        var query = statelessSession.createNativeQuery(sql, Product.class)
+                .setParameter("sku", sku);
+
+        if(idToIgnore != null){
+            query.setParameter("idToIgnore", idToIgnore);
+        }
+
+        return !query.getResultList().isEmpty();
 
     }
 
