@@ -6,6 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.DTO.ProductPage;
+import org.acme.Exception.GlobalExceptionHandler;
 import org.acme.Model.Product;
 import org.acme.Service.ProductService;
 
@@ -35,6 +36,28 @@ public class ProductResource {
         return Response.ok(products).build();
     }
 
+    @POST
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createProduct(Product product){
+
+        if(productService.isSkuTaken( product.sku, null) ){
+            return Response.status(409)
+                    .entity(new GlobalExceptionHandler.ErrorPayload("A product with this SKU already exists.", 409))
+                    .build();
+        }
+
+        boolean created = productService.createProduct(product);
+
+        if(created){
+            return Response.status(Response.Status.CREATED).entity(product).build();
+        }
+
+        return Response.status(BAD_REQUEST).build();
+
+    }
+
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -43,6 +66,13 @@ public class ProductResource {
             @PathParam("id") Long id,
             Product updatedProduct
     ){
+
+        if(productService.isSkuTaken( updatedProduct.sku, id) ){
+            return Response.status(409)
+                    .entity(new GlobalExceptionHandler.ErrorPayload("A product with this SKU already exists.", 409))
+                    .build();
+        }
+
 
         boolean updated = productService.updateProduct(id, updatedProduct);
 
@@ -66,22 +96,6 @@ public class ProductResource {
         }
 
         return Response.status(Response.Status.NOT_FOUND).build();
-
-    }
-
-    @POST
-    @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response createProduct(Product product){
-
-        boolean created = productService.createProduct(product);
-
-        if(created){
-            return Response.status(Response.Status.CREATED).entity(product).build();
-        }
-
-        return Response.status(BAD_REQUEST).build();
 
     }
 
