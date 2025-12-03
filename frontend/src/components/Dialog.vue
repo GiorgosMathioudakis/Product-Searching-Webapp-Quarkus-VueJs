@@ -37,19 +37,19 @@ function handleSave() {
         <v-form>
           <v-container>
             <v-text-field
-              v-model="localproduct.name"
+              v-model.trim="localproduct.name"
               density="compact"
               label="Name"
               variant="outlined"
             />
             <v-text-field
-              v-model="localproduct.sku"
+              v-model.trim="localproduct.sku"
               density="compact"
               label="SKU"
               variant="outlined"
             />
             <v-text-field
-              v-model="localproduct.description"
+              v-model.trim="localproduct.description"
               density="compact"
               label="Description"
               maxlength="255w"
