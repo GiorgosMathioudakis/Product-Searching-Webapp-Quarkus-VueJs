@@ -29,7 +29,7 @@ api.interceptors.response.use(
       } else if (status === 404) {
         message = "Resource not found.";
       } else if (status === 409) {
-        message = error.response.error || "Conflict: Item already exists.";
+        message = error.response.error || "Conflict: An item with this SKU already exists.";
       } else if (status === 500) {
         message = "Server error. Please try again later.";
       }
