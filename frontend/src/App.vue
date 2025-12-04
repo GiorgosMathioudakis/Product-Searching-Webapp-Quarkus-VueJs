@@ -151,16 +151,25 @@ function closeDialog() {
   productDialog.value.show = false;
 }
 
-function handleSave(productToSave){
+async function handleSave(productToSave){
+  let success;
 
   if (productToSave.edit) {
-
-    productStore.updateProduct(productToSave);
-
+    success = await productStore.updateProduct(productToSave);
+    if (success) notify.showSuccess("Product updated successfully!");
   } else {
+    success = await productStore.createNewProduct(productToSave);
+    if (success) notify.showSuccess("Product created successfully!");
+  }
 
-    productStore.createNewProduct(productToSave);
+}
 
+async function handleDelete(id) {
+  if(confirm("Are you sure you want to delete this product?")) {
+    const success = await productStore.removeProduct(id);
+    if (success) {
+      notify.showSuccess("Product deleted.");
+    }
   }
 }
 
@@ -276,7 +285,7 @@ function handleSave(productToSave){
           icon="mdi-delete"
           size="small"
           variant="text"
-          @click="productStore.removeProduct(item.id)"
+          @click="handleDelete(item.id)"
         />
       </template>
       <template v-slot:bottom>

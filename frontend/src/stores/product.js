@@ -53,10 +53,9 @@ export const useProductStore = defineStore("product", () => {
         hasPrev.value = (params.pageNo > 1);
 
         loading.value = false;
-        return; // STOP HERE, DO NOT CALL API
+        return;
       }
 
-      //API CALL (Cache Miss)
       console.log("🌍 Cache Miss. Calling API...");
       const response = await api.get(`/products`, { params });
 
@@ -82,12 +81,18 @@ export const useProductStore = defineStore("product", () => {
     try {
       await api.post("/products", productData);
 
-      // INVALIDATE CACHE: Data changed, so old cache is invalid
       pageCache.value.clear();
 
       await fetchProducts();
+
+      return true;
+
     } catch (error) {
+
       console.error("Error during create request:", error);
+
+      return false;
+
     }
   }
 
@@ -95,12 +100,17 @@ export const useProductStore = defineStore("product", () => {
     try {
       await api.put(`/products/${productData.id}`, productData);
 
-      // INVALIDATE CACHE
       pageCache.value.clear();
 
       await fetchProducts();
+
+      return true;
+
     } catch (error) {
+
       console.error("Error during update request: ", error);
+
+      return false;
     }
   }
 
@@ -108,12 +118,18 @@ export const useProductStore = defineStore("product", () => {
     try {
       await api.delete(`/products/${productId}`);
 
-      // INVALIDATE CACHE
       pageCache.value.clear();
 
       await fetchProducts();
+
+      return true;
+
     } catch (error) {
+
       console.error("Error during remove request: ", error);
+
+      return false;
+
     }
   }
 
